@@ -17,6 +17,7 @@ public class ResourseConfig {
         this.file = file;
         this.config = YamlConfiguration.loadConfiguration(file);
     }
+
     public void reloadResourceConfig() {
         config = YamlConfiguration.loadConfiguration(file);
     }
@@ -85,6 +86,16 @@ public class ResourseConfig {
     }
 
     public String getServerRPurl(){
-        return config.getString("server-resourcepack");
+        return config.getString("server-rp");
+    }
+    public boolean setServerRPurl(String url, CommandSender sender){
+        config.set("server-rp", url);
+        try {
+            config.save(file);
+        }catch (Exception e){
+            sender.sendMessage(failSaveCFG + e.getMessage());
+            return true;
+        }
+        return false;
     }
 }

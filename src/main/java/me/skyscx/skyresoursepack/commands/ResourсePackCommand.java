@@ -1,5 +1,6 @@
 package me.skyscx.skyresoursepack.commands;
 
+import me.skyscx.skyresoursepack.Functions;
 import me.skyscx.skyresoursepack.ResourseConfig;
 import me.skyscx.skyresoursepack.SkyResoursePack;
 import org.bukkit.command.Command;
@@ -16,11 +17,11 @@ import static me.skyscx.skyresoursepack.Messages.*;
 public class ResourсePackCommand implements CommandExecutor {
     private final SkyResoursePack plugin;
     private ResourseConfig resourceConfig;
+    private Functions functions;
 
-    public ResourсePackCommand(SkyResoursePack plugin) {
+    public ResourсePackCommand(SkyResoursePack plugin, ResourseConfig resourceConfig) {
         this.plugin = plugin;
-        File configFile = new File(plugin.getDataFolder(), "resource.yml");
-        this.resourceConfig = new ResourseConfig(configFile); // Инициализация resourceConfig
+        this.resourceConfig = resourceConfig;
     }
 
     @Override
@@ -35,6 +36,11 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             String name = args[1], url = args[2];
+            boolean validURL = functions.isUrlValid(url);
+            if (!validURL){
+                sender.sendMessage(invalidURL);
+                return true;
+            }
             String playerName = null;
             if (sender instanceof Player){
                 Player player = (Player) sender;
@@ -87,6 +93,11 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             String name = args[1], url = args[2];
+            boolean validURL = functions.isUrlValid(url);
+            if (!validURL){
+                sender.sendMessage(invalidURL);
+                return true;
+            }
             boolean containtRP = resourceConfig.checkContainsResoursePack(name, sender);
             if (containtRP){return true;}
             String owner = resourceConfig.getOwnerRP(name);
@@ -102,6 +113,22 @@ public class ResourсePackCommand implements CommandExecutor {
             resourceConfig.reloadResourceConfig();
             sender.sendMessage(reloadedCFG);
         } else if (args[0].equalsIgnoreCase("server")){
+            if (args[1].equalsIgnoreCase("set")){
+                if (args.length < 3){
+                    sender.sendMessage(serverRPset);
+                    return true;
+                }
+                String url = args[2];
+                boolean validURL = functions.isUrlValid(url);
+                if (!validURL){
+                    sender.sendMessage(invalidURL);
+                    return true;
+                }
+                boolean setServerUrlRP = resourceConfig.setServerRPurl(url, sender);
+                if (setServerUrlRP){ return true;}
+                sender.sendMessage(succServerRPset);
+                return true;
+            }
             if (sender instanceof Player){
                 Player player = (Player) sender;
                 String url = resourceConfig.getServerRPurl();
@@ -115,7 +142,7 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(noConsoleCMD);
                 return true;
             }
-        } else {
+        }else {
             sender.sendMessage(unkownCMD);
         }
         return true;

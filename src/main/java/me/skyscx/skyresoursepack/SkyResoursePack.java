@@ -11,15 +11,14 @@ public final class SkyResoursePack extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        File resourseFile = new File(getDataFolder(), "resourсe.yml");
-        resourceConfig = new ResourseConfig(resourseFile);
-        resourceConfig.reloadResourceConfig();
-        getCommand("resourcepack").setExecutor(new ResourсePackCommand(this));
+        ResourseConfig resourceConfig = new ResourseConfig(new File(getDataFolder(), "resource.yml"));
+        getCommand("resourcepack").setExecutor(new ResourсePackCommand(this, resourceConfig));
+
 
     }
 
     @Override
     public void onDisable() {
-        resourceConfig.saveResourceConfig();
+        //logic
     }
 }
