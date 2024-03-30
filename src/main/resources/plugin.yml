@@ -1,0 +1,4 @@
+name: SkyResoursePack
+version: '${version}'
+main: me.skyscx.skyresoursepack.SkyResoursePack
+api-version: '1.20'
