@@ -1,6 +1,5 @@
 package me.skyscx.skyresoursepack.commands;
 
-import me.skyscx.skyresoursepack.Messages;
 import me.skyscx.skyresoursepack.ResourseConfig;
 import me.skyscx.skyresoursepack.SkyResoursePack;
 import org.bukkit.command.Command;
@@ -9,13 +8,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.Objects;
 
 import static me.skyscx.skyresoursepack.Messages.*;
 
-public class ResoursePackCommand implements CommandExecutor {
+public class ResourсePackCommand implements CommandExecutor {
+    private final SkyResoursePack plugin;
     private ResourseConfig resourceConfig;
-    private SkyResoursePack plugin;
+
+    public ResourсePackCommand(SkyResoursePack plugin) {
+        this.plugin = plugin;
+        File configFile = new File(plugin.getDataFolder(), "resource.yml");
+        this.resourceConfig = new ResourseConfig(configFile); // Инициализация resourceConfig
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -87,13 +93,6 @@ public class ResoursePackCommand implements CommandExecutor {
             if (!sender.hasPermission("skyresoursepack.admin") || !sender.isOp() || !sender.getName().equalsIgnoreCase(owner)){
                 sender.sendMessage(noAuthor);
                 return true;
-            }
-            String playerName = null;
-            if (sender instanceof Player){
-                Player player = (Player) sender;
-                playerName = player.getName();
-            }else{
-                playerName = "SERVER";
             }
             boolean updateRP = resourceConfig.updateRP(name, url, sender);
             if (updateRP){ return true;}

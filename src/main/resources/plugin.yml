@@ -2,3 +2,9 @@ name: SkyResoursePack
 version: '${version}'
 main: me.skyscx.skyresoursepack.SkyResoursePack
 api-version: '1.20'
+commands:
+  resourcepack:
+    aliases:
+      - rp
+    description: Установка и загрузка пакета ресурсов.
+    usage: /resourcepack upload <name> <url>, load <name>, delete <name>, update <name> <newUrl>, reload, server
