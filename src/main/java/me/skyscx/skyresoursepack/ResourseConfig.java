@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.skyscx.skyresoursepack.Messages.*;
 
@@ -84,7 +86,6 @@ public class ResourseConfig {
         }
         return false;
     }
-
     public String getServerRPurl(){
         return config.getString("server-rp");
     }
@@ -97,5 +98,17 @@ public class ResourseConfig {
             return true;
         }
         return false;
+    }
+    public void getListRP(CommandSender sender){
+        List<String> resourcePackNames = new ArrayList<>();
+        for (String key : config.getConfigurationSection("resourcepack").getKeys(false)) {
+            resourcePackNames.add(key);
+        }
+        if (resourcePackNames.isEmpty()) {
+            sender.sendMessage(emptyList);
+        } else {
+            String resourcePacksList = listRP + " " + String.join(", ", resourcePackNames);
+            sender.sendMessage(resourcePacksList);
+        }
     }
 }
