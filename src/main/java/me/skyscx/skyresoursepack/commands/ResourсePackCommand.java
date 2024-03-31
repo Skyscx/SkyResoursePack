@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 import static me.skyscx.skyresoursepack.Messages.*;
@@ -48,9 +49,17 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(invalidURL);
                 return true;
             }
-            String playerName = null;
+            String playerName;
             if (sender instanceof Player player){
                 playerName = player.getName();
+                int availableUpload = resourceConfig.getAvailableUpload();
+                int uploadedRP = resourceConfig.getUploadedRP(player);
+                System.out.println(uploadedRP + " - загружено");
+                System.out.println(availableUpload + " - доступно всего");
+                if (uploadedRP > availableUpload){
+                    sender.sendMessage(moreUploadsError);
+                    return true;
+                }
             }else{
                 playerName = "SERVER";
             }
@@ -60,45 +69,55 @@ public class ResourсePackCommand implements CommandExecutor {
             if (saveRP) {return true;}
             String message = messages.succefulUpload(name, resourceConfig.getIdRP(name));
             sender.sendMessage(message);
-        } else if (args[0].equalsIgnoreCase("load")) {
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("load")) {
             if (sender instanceof Player player){
                 if (args.length < 2){
                     sender.sendMessage(cmdLoad);
                     return true;
                 }
-                String name = args[1];
-                boolean containtRP = resourceConfig.checkContainsResoursePack(name, sender);
-                if (containtRP){return true;}
+                boolean tryNum = functions.isNumeric(args[1]);
+                if (!tryNum){
+                    sender.sendMessage(invalidID);
+                    return true;
+                }
+                int id = Integer.parseInt(args[1]);
+                boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
+                if (containtRP){
+                    System.out.println("containtRp = true");
+                    return true;}
+                String name = resourceConfig.getNameRP(id);
                 String urlRP = resourceConfig.getUrlRP(name);
                 player.setResourcePack(urlRP, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                String message = messages.loadRP(name, resourceConfig.getIdRP(name));
+                String message = messages.loadRP(name, id);
                 player.sendMessage(message);
+                return true;
             }else {
                 sender.sendMessage(noConsoleCMD);
             }
-        } else if (args[0].equalsIgnoreCase("delete")) {
+        }
+        if (args[0].equalsIgnoreCase("delete")) {
             if (args.length < 2) {
                 sender.sendMessage(cmdDelete);
                 return true;
             }
             String name = args[1];
-            boolean containtRP = resourceConfig.checkContainsResoursePack(name, sender);
+            int id = resourceConfig.getIdRP(name);
+            boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
             if (containtRP) {return true;}
             String owner = resourceConfig.getOwnerRP(name);
-            System.out.println("sender.getName() = " + sender.getName());
-            System.out.println("owner = " + owner);
             if (sender.hasPermission("skyresourcepack.admin") || sender.isOp() || sender.getName().equalsIgnoreCase(owner)){
                 boolean delRP = resourceConfig.deleteRP(name, sender);
-                if (delRP) {
-                    return true;
-                }
+                if (delRP) {return true;}
                 String message = messages.deleteRP(name);
                 sender.sendMessage(message);
-                return true;
+            }else {
+                sender.sendMessage(noAuthor);
             }
-            sender.sendMessage(noAuthor);
             return true;
-        } else if (args[0].equalsIgnoreCase("update")) {
+        }
+        if (args[0].equalsIgnoreCase("update")) {
             if (args.length < 3){
                 sender.sendMessage(cmdUpdate);
                 return true;
@@ -109,22 +128,27 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(invalidURL);
                 return true;
             }
-            boolean containtRP = resourceConfig.checkContainsResoursePack(name, sender);
+            int id = resourceConfig.getIdRP(name);
+            boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
             if (containtRP){return true;}
             String owner = resourceConfig.getOwnerRP(name);
-            if (!sender.hasPermission("skyresourcepack.admin") || !sender.isOp() || !sender.getName().equalsIgnoreCase(owner)){
+            if (sender.hasPermission("skyresourcepack.admin") || sender.isOp() || sender.getName().equalsIgnoreCase(owner)){
+                boolean updateRP = resourceConfig.updateRP(name, url, sender);
+                if (updateRP){ return true;}
+                String message = messages.updatedRP(name, id);
+                sender.sendMessage(message);
+            } else {
                 sender.sendMessage(noAuthor);
-                return true;
             }
-            boolean updateRP = resourceConfig.updateRP(name, url, sender);
-            if (updateRP){ return true;}
-            String message = messages.updatedRP(name);
-            sender.sendMessage(message);
-        } else if (args[0].equalsIgnoreCase("reload")) {
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("skyresourcepack.admin") || !sender.isOp()) {return true;}
             resourceConfig.reloadResourceConfig();
             sender.sendMessage(reloadedCFG);
-        } else if (args[0].equalsIgnoreCase("server")){
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("server")){
             if (args.length > 1 ){
                 if (args[1].equalsIgnoreCase("set")){
                     if (!sender.hasPermission("skyresoursepack.admin") || !sender.isOp()){
@@ -146,7 +170,8 @@ public class ResourсePackCommand implements CommandExecutor {
                     sender.sendMessage(succServerRPset);
                     return true;
                 }
-            } else if (sender instanceof Player player) {
+            }
+            if (sender instanceof Player player) {
                 String url = resourceConfig.getServerRPurl();
                 if (url == null){
                     sender.sendMessage(noServerRP);
@@ -154,26 +179,117 @@ public class ResourсePackCommand implements CommandExecutor {
                 }
                 player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
                 player.sendMessage(loadServRP);
+                return true;
             } else {
                 sender.sendMessage(noConsoleCMD);
                 return true;
             }
 
-        } else if (args[0].equalsIgnoreCase("disable")) {
+        }
+        if (args[0].equalsIgnoreCase("disable")) {
             if (sender instanceof Player player){
                 player.setResourcePack("","");
                 player.sendMessage(disabledRP);
             }
             return true;
-        } else if (args[0].equalsIgnoreCase("list")) {
+        }
+        if (args[0].equalsIgnoreCase("list")) {
+            if (args.length >= 2){
+                if (args[1].equalsIgnoreCase("my")){
+                    String playerName;
+                    if (sender instanceof Player player){
+                        playerName = player.getName();
+                    }else{
+                        playerName = "SERVER";
+                    }
+                    List<String> myRP = resourceConfig.getListRPowner(playerName);
+                    if (myRP.isEmpty()) {
+                        sender.sendMessage(emptyListRP);
+                        return true;
+                    }else {
+                        StringBuilder message = new StringBuilder(myRPlist);
+                        for (int i = 0; i < myRP.size(); i++) {
+                            String rp = myRP.get(i);
+                            message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
+
+                            if (i < myRP.size() - 1) {
+                                message.append(", ");
+                            }
+                        }
+                        sender.sendMessage(message.toString());
+                        return true;
+                    }
+                }
+                if (args[1].equalsIgnoreCase("player")){
+                    String playerName = args[2];
+                    String name;
+                    StringBuilder message;
+                    if (sender instanceof Player player){
+                        name = player.getName();
+                    }else{
+                        name = "SERVER";
+                    }
+                    if (playerName.equalsIgnoreCase(name)){
+                        message = new StringBuilder(myRPlist);
+                    }else {
+                        message = new StringBuilder(messages.rpList(playerName));
+                    }
+                    List<String> myRP = resourceConfig.getListRPowner(playerName);
+                    if (myRP.isEmpty()) {
+                        sender.sendMessage(emptyListRP);
+                        return true;
+                    }
+                    for (int i = 0; i < myRP.size(); i++) {
+                        String rp = myRP.get(i);
+                        message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
+                        if (i < myRP.size() - 1) {
+                            message.append(", ");
+                        }
+                    }
+                    sender.sendMessage(message.toString());
+                    return true;
+                }
+            }
             resourceConfig.getListRPString(sender);
             return true;
-        } else if (args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage("Скора...");
-        } else {
-            sender.sendMessage(unkownCMD);
-            return true;
         }
+        if (args[0].equalsIgnoreCase("help")) {
+            sender.sendMessage(helpCMD);
+            return  true;
+        }
+        if (args[0].equalsIgnoreCase("info")) {
+            if (args.length < 3){
+                sender.sendMessage(cmdInfo);
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("name")){
+                //LOGIC name check
+                String name = args[2];
+                int id = resourceConfig.getIdRP(name);
+                boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
+                if (containtRP){return true;}
+                String owner = resourceConfig.getOwnerRP(name);
+                int version = resourceConfig.getVersion(name);
+                sender.sendMessage(messages.info(name, id, version, owner));
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("id")){
+                //LOGIN id check
+                int id = Integer.parseInt(args[2]);
+                boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
+                if (containtRP){return true;}
+                String name = resourceConfig.getNameRP(id);
+                String owner = resourceConfig.getOwnerRP(name);
+                int version = resourceConfig.getVersion(name);
+                sender.sendMessage(messages.info(name, id, version, owner));
+                return true;
+            }
+            else {
+                sender.sendMessage(cmdInfo);
+                return true;
+            }
+        }
+        sender.sendMessage(unkownCMD);
         return true;
     }
 }
