@@ -4,18 +4,17 @@ public class Messages {
     public static String usageCMD = "Используй: /rp upload <name> <url>, load <name>, delete <name>, update <name> <newUrl>, reload, server";
     public static String cmdUpload = "Используй: /rp upload <name> <url>";
     public static String existingRP = "Пакет ресурсов с таким именем уже существует!";
-    public String succefulUpload(String name){
-        return "Пакет ресурсов «" + name + "» успешно загружен!";
+    public String succefulUpload(String name, int id){
+        return "Пакет ресурсов «" + name + "» успешно загружен! (id: " + id + ")";
     }
-
-
 
     public static String cmdLoad = "Используй: /rp load <name>";
     public static String notRP = "Пакет ресурсов с таким именем не существует!";
     public static String noConsoleCMD = "Данную команду можно выполнить только через клиент!";
-    public String loadRP(String name){
-        return "Пакет ресурсов «" + name + "» успешно загружен!";
+    public String loadRP(String name, int id){
+        return "Пакет ресурсов «" + name + "» успешно загружен! (id: " + id + ")";
     }
+    public static String loadServRP = "Пакет ресурсов «§6SERVER§r» успешно загружен!";
     public static String cmdDelete = "Используй: /rp delete <name>";
     public static String noAuthor = "Вы не имеете права выполнить данное действие с этим пакетом ресурсов!";
     public static String failSaveCFG = "Ошибка сохранения конфигурационного файла: ";

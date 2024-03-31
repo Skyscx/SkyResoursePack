@@ -58,7 +58,7 @@ public class ResourсePackCommand implements CommandExecutor {
             if (containtRP){return true;}
             boolean saveRP = resourceConfig.saveRP(name, url, playerName, sender);
             if (saveRP) {return true;}
-            String message = messages.succefulUpload(name);
+            String message = messages.succefulUpload(name, resourceConfig.getIdRP(name));
             sender.sendMessage(message);
         } else if (args[0].equalsIgnoreCase("load")) {
             if (sender instanceof Player player){
@@ -71,7 +71,7 @@ public class ResourсePackCommand implements CommandExecutor {
                 if (containtRP){return true;}
                 String urlRP = resourceConfig.getUrlRP(name);
                 player.setResourcePack(urlRP, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                String message = messages.loadRP(name);
+                String message = messages.loadRP(name, resourceConfig.getIdRP(name));
                 player.sendMessage(message);
             }else {
                 sender.sendMessage(noConsoleCMD);
@@ -153,9 +153,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     return true;
                 }
                 player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                String name = "§6SERVER§r";
-                String message = messages.loadRP(name);
-                player.sendMessage(message);
+                player.sendMessage(loadServRP);
             } else {
                 sender.sendMessage(noConsoleCMD);
                 return true;

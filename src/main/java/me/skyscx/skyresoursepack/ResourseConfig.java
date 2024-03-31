@@ -1,6 +1,7 @@
 package me.skyscx.skyresoursepack;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -40,6 +41,8 @@ public class ResourseConfig {
         return false;
     }
     public boolean saveRP(String name, String url, String player, CommandSender sender){
+        int maxId = getMaxResourcePackIdFromConfig();
+        config.set("resourcepack." + name + ".id", maxId + 1);
         config.set("resourcepack." + name + ".url", url);
         config.set("resourcepack." + name + ".version", 1);
         config.set("resourcepack." + name + ".player", player);
@@ -51,6 +54,20 @@ public class ResourseConfig {
         }
         return false;
     }
+    public int getMaxResourcePackIdFromConfig() {
+        int maxId = 0;
+        ConfigurationSection resourcePackSection = config.getConfigurationSection("resourcepack");
+        if (resourcePackSection != null) {
+            for (String name : resourcePackSection.getKeys(false)) {
+                int id = config.getInt("resourcepack." + name + ".id");
+                if (id > maxId) {
+                    maxId = id;
+                }
+            }
+        }
+        return maxId;
+    }
+
     public String getUrlRP(String name){
         return config.getString("resourcepack." + name + ".url");
     }
@@ -95,10 +112,14 @@ public class ResourseConfig {
         return false;
     }
     public List<String> getListRP(){
-        return new ArrayList<>(Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false));
+        ConfigurationSection resourcePackSection = config.getConfigurationSection("resourcepack");
+        if (resourcePackSection == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(resourcePackSection.getKeys(false));
     }
-    public void getListRPString(CommandSender sender){
-        List<String> resourcePackNames = new ArrayList<>(Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false));
+    public void getListRPString(CommandSender sender) {
+        List<String> resourcePackNames = getListRP();
         if (resourcePackNames.isEmpty()) {
             sender.sendMessage(emptyList);
         } else {
@@ -106,16 +127,25 @@ public class ResourseConfig {
             sender.sendMessage(resourcePacksList);
         }
     }
-    public List<String> getListRPowner(String player){
+    public List<String> getListRPowner(String player) {
         List<String> playerResourcePacks = new ArrayList<>();
-        for (String resourcePackName : Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false)) {
-            String playerName = config.getString("resourcepack." + resourcePackName + ".player");
-            if (playerName != null && playerName.equalsIgnoreCase(player)) {
-                playerResourcePacks.add(resourcePackName);
+        ConfigurationSection resourcePackSection = config.getConfigurationSection("resourcepack");
+        if (resourcePackSection != null) {
+            for (String resourcePackName : resourcePackSection.getKeys(false)) {
+                String playerName = resourcePackSection.getString(resourcePackName + ".player");
+                if (playerName != null && playerName.equalsIgnoreCase(player)) {
+                    playerResourcePacks.add(resourcePackName);
+                }
             }
         }
-        System.out.println(playerResourcePacks);
         return playerResourcePacks;
-
     }
+    public int getIdRP(String name) {
+        ConfigurationSection resourcePackSection = config.getConfigurationSection("resourcepack." + name);
+        if (resourcePackSection != null) {
+            return resourcePackSection.getInt("id");
+        }
+        return -1; // Возвращаем -1, если секция не найдена
+    }
+
 }

@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ResourcePackCommandCompleter implements TabCompleter {
     private final ResourseConfig resourceConfig;
@@ -47,9 +46,7 @@ public class ResourcePackCommandCompleter implements TabCompleter {
             }
         } if (args.length == 2) {
             if (args[0].equalsIgnoreCase("load")) {
-                return resourceConfig.getListRP().stream()
-                        .filter(rp -> rp.startsWith(args[1]))
-                        .collect(Collectors.toList());
+                return resourceConfig.getListRP();
             } else if (args[0].equalsIgnoreCase("server")) {
                 if (sender.hasPermission("skyresourcepack.admin") || sender.isOp()) {
                     return List.of("set");
