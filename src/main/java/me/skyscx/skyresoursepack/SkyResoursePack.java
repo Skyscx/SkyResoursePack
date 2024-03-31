@@ -8,6 +8,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.Objects;
 
+// =============================================================================
+// SkyResourcePack
+// =============================================================================
+// [RU] Плагин разработан для игрового сервера майнкрафт - ZenPower RP.
+// [EN] Plugin developed for the Minecraft game server - ZenPower RP.
+// -----------------------------------------------------------------------------
+// Author:
+// - Skyscx (https://github.com/Skyscx)
+// -----------------------------------------------------------------------------
+
 public final class SkyResoursePack extends JavaPlugin {
     private ResourseConfig resourseConfig;
     public SkyResoursePack() {
