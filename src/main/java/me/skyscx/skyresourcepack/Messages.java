@@ -7,14 +7,14 @@ public class Messages {
     public static String cmdUpload = " Используй: §6/rp upload <name> <url>";
     public static String existingRP = "§c Пакет ресурсов с таким именем уже существует!";
     public String succefulUpload(String name, int id){
-        return "§a Пакет ресурсов §6" + name + "§a успешно установлен! §r(id: §6" + id + "§r)";
+        return "§a Пакет ресурсов §6" + name + "§a успешно загружен! §r(id: §6" + id + "§r)";
     }
 
     public static String cmdLoad = " Используй: §6/rp load <name>";
     public static String notRP = "§c Пакет ресурсов с таким идентификатором не существует!";
     public static String noConsoleCMD = "§c Данную команду можно выполнить только через клиент!";
     public String loadRP(String name, int id){
-        return "§a Пакет ресурсов §6" + name + "§a успешно загружен! §r(id: §6" + id + "§r)";
+        return "§a Пакет ресурсов §6" + name + "§a успешно установлен! §r(id: §6" + id + "§r)";
     }
     public static String loadServRP = "§a Пакет ресурсов §6SERVER§a успешно загружен!";
     public static String cmdDelete = " Используй: §6/rp delete <name>";

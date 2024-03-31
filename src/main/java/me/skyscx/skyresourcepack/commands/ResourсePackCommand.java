@@ -40,7 +40,7 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             String name = args[1], url = args[2];
-            if (name.equals("<name>") || url.equals("<url>")){
+            if (name.equals("<name>") || url.equals("<url>") || name.equalsIgnoreCase("SERVER")){
                 sender.sendMessage(cmdUpload);
                 return true;
             }
