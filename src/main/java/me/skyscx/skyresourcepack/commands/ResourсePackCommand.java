@@ -221,6 +221,10 @@ public class ResourсePackCommand implements CommandExecutor {
                     }
                 }
                 if (args[1].equalsIgnoreCase("player")){
+                    if (args.length == 2){
+                        sender.sendMessage(listPlayerCMD);
+                        return true;
+                    }
                     String playerName = args[2];
                     String name;
                     StringBuilder message;

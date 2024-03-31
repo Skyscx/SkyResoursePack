@@ -59,4 +59,5 @@ public class Messages {
         return ChatColor.of("#008080") + " Пакеты ресурсов " + name + ": §r";
     }
     public static String emptyListRP = "§c Список пакетов ресурсов пуст!";
+    public static String listPlayerCMD = " Используй: §6/rp list player <nickname>";
 }
