@@ -3,18 +3,18 @@ package me.skyscx.skyresoursepack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static me.skyscx.skyresoursepack.Messages.*;
 
 public class ResourseConfig {
     private FileConfiguration config;
-    private File file;
+    private final File file;
     public ResourseConfig(File file) {
         this.file = file;
         this.config = YamlConfiguration.loadConfiguration(file);
@@ -22,13 +22,6 @@ public class ResourseConfig {
 
     public void reloadResourceConfig() {
         config = YamlConfiguration.loadConfiguration(file);
-    }
-    public void saveResourceConfig() {
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**Getter and Setter**/
@@ -62,6 +55,8 @@ public class ResourseConfig {
         return config.getString("resourcepack." + name + ".url");
     }
     public String getOwnerRP(String name){
+        String player = config.getString("resourcepack." + name + ".player");
+        System.out.println("Player own: " + player);
         return config.getString("resourcepack." + name + ".player");
     }
     public boolean deleteRP(String name, CommandSender sender){
@@ -99,16 +94,28 @@ public class ResourseConfig {
         }
         return false;
     }
-    public void getListRP(CommandSender sender){
-        List<String> resourcePackNames = new ArrayList<>();
-        for (String key : config.getConfigurationSection("resourcepack").getKeys(false)) {
-            resourcePackNames.add(key);
-        }
+    public List<String> getListRP(){
+        return new ArrayList<>(Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false));
+    }
+    public void getListRPString(CommandSender sender){
+        List<String> resourcePackNames = new ArrayList<>(Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false));
         if (resourcePackNames.isEmpty()) {
             sender.sendMessage(emptyList);
         } else {
             String resourcePacksList = listRP + " " + String.join(", ", resourcePackNames);
             sender.sendMessage(resourcePacksList);
         }
+    }
+    public List<String> getListRPowner(String player){
+        List<String> playerResourcePacks = new ArrayList<>();
+        for (String resourcePackName : Objects.requireNonNull(config.getConfigurationSection("resourcepack")).getKeys(false)) {
+            String playerName = config.getString("resourcepack." + resourcePackName + ".player");
+            if (playerName != null && playerName.equalsIgnoreCase(player)) {
+                playerResourcePacks.add(resourcePackName);
+            }
+        }
+        System.out.println(playerResourcePacks);
+        return playerResourcePacks;
+
     }
 }

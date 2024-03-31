@@ -9,4 +9,4 @@ commands:
     aliases:
       - rp
     description: Установка и загрузка пакета ресурсов.
-    usage: /resourcepack upload <name> <url>, load <name>, delete <name>, update <name> <newUrl>, reload, server
+    usage: /rp help
