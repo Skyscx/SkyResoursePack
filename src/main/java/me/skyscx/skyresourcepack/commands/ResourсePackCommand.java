@@ -1,9 +1,9 @@
-package me.skyscx.skyresoursepack.commands;
+package me.skyscx.skyresourcepack.commands;
 
-import me.skyscx.skyresoursepack.Functions;
-import me.skyscx.skyresoursepack.Messages;
-import me.skyscx.skyresoursepack.ResourseConfig;
-import me.skyscx.skyresoursepack.SkyResoursePack;
+import me.skyscx.skyresourcepack.Functions;
+import me.skyscx.skyresourcepack.Messages;
+import me.skyscx.skyresourcepack.ResourseConfig;
+import me.skyscx.skyresourcepack.SkyResourcePack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,15 +13,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import static me.skyscx.skyresoursepack.Messages.*;
+import static me.skyscx.skyresourcepack.Messages.*;
 
 public class ResourсePackCommand implements CommandExecutor {
-    private final SkyResoursePack plugin;
+    private final SkyResourcePack plugin;
     private final ResourseConfig resourceConfig;
     private final Functions functions;
     private final Messages messages;
 
-    public ResourсePackCommand(SkyResoursePack plugin, ResourseConfig resourceConfig, Functions functions, Messages messages) {
+    public ResourсePackCommand(SkyResourcePack plugin, ResourseConfig resourceConfig, Functions functions, Messages messages) {
         this.plugin = plugin;
         this.resourceConfig = resourceConfig;
         this.functions = functions;

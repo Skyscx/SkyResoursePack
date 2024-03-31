@@ -1,6 +1,4 @@
-package me.skyscx.skyresoursepack;
-
-import org.bukkit.command.CommandSender;
+package me.skyscx.skyresourcepack;
 
 import java.io.IOException;
 import java.net.URL;

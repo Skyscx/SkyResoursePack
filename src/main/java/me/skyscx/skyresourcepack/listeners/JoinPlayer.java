@@ -1,7 +1,7 @@
-package me.skyscx.skyresoursepack.listeners;
+package me.skyscx.skyresourcepack.listeners;
 
-import me.skyscx.skyresoursepack.ResourseConfig;
-import me.skyscx.skyresoursepack.SkyResoursePack;
+import me.skyscx.skyresourcepack.ResourseConfig;
+import me.skyscx.skyresourcepack.SkyResourcePack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,8 +11,8 @@ import java.util.Objects;
 
 public class JoinPlayer implements Listener {
     private final ResourseConfig resourceConfig;
-    private final SkyResoursePack plugin;
-    public JoinPlayer(SkyResoursePack plugin, ResourseConfig resourceConfig) {
+    private final SkyResourcePack plugin;
+    public JoinPlayer(SkyResourcePack plugin, ResourseConfig resourceConfig) {
         this.plugin = plugin;
         this.resourceConfig = resourceConfig;
     }

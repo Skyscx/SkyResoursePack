@@ -1,8 +1,8 @@
-package me.skyscx.skyresoursepack;
+package me.skyscx.skyresourcepack;
 
-import me.skyscx.skyresoursepack.commands.ResourcePackCommandCompleter;
-import me.skyscx.skyresoursepack.commands.ResourсePackCommand;
-import me.skyscx.skyresoursepack.listeners.JoinPlayer;
+import me.skyscx.skyresourcepack.commands.ResourcePackCommandCompleter;
+import me.skyscx.skyresourcepack.commands.ResourсePackCommand;
+import me.skyscx.skyresourcepack.listeners.JoinPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -18,9 +18,9 @@ import java.util.Objects;
 // - Skyscx (https://github.com/Skyscx)
 // -----------------------------------------------------------------------------
 
-public final class SkyResoursePack extends JavaPlugin {
+public final class SkyResourcePack extends JavaPlugin {
     private ResourseConfig resourseConfig;
-    public SkyResoursePack() {
+    public SkyResourcePack() {
     }
     @Override
     public void onEnable() {

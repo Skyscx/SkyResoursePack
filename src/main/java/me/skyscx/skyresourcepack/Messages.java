@@ -1,4 +1,4 @@
-package me.skyscx.skyresoursepack;
+package me.skyscx.skyresourcepack;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -7,14 +7,14 @@ public class Messages {
     public static String cmdUpload = " Используй: §6/rp upload <name> <url>";
     public static String existingRP = "§c Пакет ресурсов с таким именем уже существует!";
     public String succefulUpload(String name, int id){
-        return "§a Пакет ресурсов §6" + name + "§a успешно установлен! (id: §6" + id + "§r)";
+        return "§a Пакет ресурсов §6" + name + "§a успешно установлен! §r(id: §6" + id + "§r)";
     }
 
     public static String cmdLoad = " Используй: §6/rp load <name>";
     public static String notRP = "§c Пакет ресурсов с таким идентификатором не существует!";
     public static String noConsoleCMD = "§c Данную команду можно выполнить только через клиент!";
     public String loadRP(String name, int id){
-        return "§a Пакет ресурсов §6" + name + "§a успешно загружен! (id: §6" + id + "§r)";
+        return "§a Пакет ресурсов §6" + name + "§a успешно загружен! §r(id: §6" + id + "§r)";
     }
     public static String loadServRP = "§a Пакет ресурсов §6SERVER§a успешно загружен!";
     public static String cmdDelete = " Используй: §6/rp delete <name>";
@@ -25,7 +25,7 @@ public class Messages {
     }
     public static String cmdUpdate = " Используй: §6/rp update <name> <newUrl>";
     public String updatedRP(String name, int id){
-        return " Ссылка на пакет ресурсов §6" + name + "§r обновлена! (id: §6" + id + "§r)";
+        return " Ссылка на пакет ресурсов §6" + name + "§r обновлена! §r(id: §6" + id + "§r)";
     }
     public static String reloadedCFG = "§a Конфигурация успешно перезагружена!";
     public static String noServerRP = "§7 Пакет ресурсов сервера не были заданы!";

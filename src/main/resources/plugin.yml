@@ -1,6 +1,6 @@
-name: SkyResoursePack
+name: SkyResourcePack
 version: '${version}'
-main: me.skyscx.skyresoursepack.SkyResoursePack
+main: me.skyscx.skyresourcepack.SkyResourcePack
 api-version: '1.20'
 author: Skyscx_
 website: https://github.com/Skyscx

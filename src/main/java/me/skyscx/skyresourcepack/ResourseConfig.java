@@ -1,4 +1,4 @@
-package me.skyscx.skyresoursepack;
+package me.skyscx.skyresourcepack;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-import static me.skyscx.skyresoursepack.Messages.*;
+import static me.skyscx.skyresourcepack.Messages.*;
 
 public class ResourseConfig {
     private FileConfiguration config;
