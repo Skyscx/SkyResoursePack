@@ -152,6 +152,17 @@ public class ResourseConfig {
             return new ArrayList<>();
         }
         return new ArrayList<>(resourcePackSection.getKeys(false));
+
+        /**
+         *
+         * for (int i = 0; i < myRP.size(); i++) {
+         *                         String rp = myRP.get(i);
+         *                         message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
+         *                         if (i < myRP.size() - 1) {
+         *                             message.append(", ");
+         *                         }
+         *                     }
+         * **/
     }
     public void getListRPString(CommandSender sender) {
         List<String> resourcePackNames = getListRP();

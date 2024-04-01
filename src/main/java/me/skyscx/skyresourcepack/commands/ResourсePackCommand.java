@@ -194,6 +194,7 @@ public class ResourсePackCommand implements CommandExecutor {
             return true;
         }
         if (args[0].equalsIgnoreCase("list")) {
+            StringBuilder message;
             if (args.length >= 2){
                 if (args[1].equalsIgnoreCase("my")){
                     String playerName;
@@ -207,7 +208,7 @@ public class ResourсePackCommand implements CommandExecutor {
                         sender.sendMessage(emptyListRP);
                         return true;
                     }else {
-                        StringBuilder message = new StringBuilder(myRPlist);
+                        message = new StringBuilder(myRPlist);
                         for (int i = 0; i < myRP.size(); i++) {
                             String rp = myRP.get(i);
                             message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
@@ -227,7 +228,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     }
                     String playerName = args[2];
                     String name;
-                    StringBuilder message;
+
                     if (sender instanceof Player player){
                         name = player.getName();
                     }else{
@@ -254,7 +255,20 @@ public class ResourсePackCommand implements CommandExecutor {
                     return true;
                 }
             }
-            resourceConfig.getListRPString(sender);
+            List<String> rpList = resourceConfig.getListRP();
+            message = new StringBuilder(listRP);
+            if (rpList.isEmpty()) {
+                sender.sendMessage(emptyListRP);
+                return true;
+            }
+            for (int i = 0; i < rpList.size(); i++) {
+                String rp = rpList.get(i);
+                message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
+                if (i < rpList.size() - 1) {
+                    message.append(", ");
+                }
+            }
+            sender.sendMessage(message.toString());
             return true;
         }
         if (args[0].equalsIgnoreCase("help")) {
@@ -267,7 +281,6 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             if (args[1].equalsIgnoreCase("name")){
-                //LOGIC name check
                 String name = args[2];
                 int id = resourceConfig.getIdRP(name);
                 boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
@@ -278,7 +291,6 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             if (args[1].equalsIgnoreCase("id")){
-                //LOGIN id check
                 int id = Integer.parseInt(args[2]);
                 boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
                 if (containtRP){return true;}
