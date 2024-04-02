@@ -47,13 +47,13 @@ public final class SkyResourcePack extends JavaPlugin {
         this.playerConfig = new PlayerConfig(playerFile);
 
         File signsFile = new File(getDataFolder(), "signs.yml");
-        this.signsConfig = new SignsConfig(signsFile, this);
+        this.signsConfig = new SignsConfig(signsFile);
 
         ResourseConfig resourceConfig = new ResourseConfig(new File(getDataFolder(), "resource.yml"));
         PlayerConfig playerConfig1 = new PlayerConfig(new File(getDataFolder(), "player.yml"));
-        SignsConfig signsConfig1 = new SignsConfig(new File(getDataFolder(), "signs.yml"), this);
+        SignsConfig signsConfig1 = new SignsConfig(new File(getDataFolder(), "signs.yml"));
 
-        signsConfig1.SignResourcePack();
+        signsConfig1.signResourcePack(this);
 
         Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages, playerConfig1, resourcePackStatusManager));
         Objects.requireNonNull(getCommand("resourcepack")).setTabCompleter(new ResourcePackCommandCompleter(resourceConfig));

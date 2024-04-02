@@ -50,13 +50,7 @@ public class SignResourcePack implements Listener {
 
                 // Сохранение метаданных блока в файле конфигурации
                 String serializedLocation = event.getBlock().getWorld().getName() + "," + event.getBlock().getX() + "," + event.getBlock().getY() + "," + event.getBlock().getZ();
-                signsConfig.set(serializedLocation, rpId);
-                try {
-                    signsConfig.save(configFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                signsConfig.saveResourcePack(serializedLocation, rpId);
                 isLineReplaced = true;
             }
         }

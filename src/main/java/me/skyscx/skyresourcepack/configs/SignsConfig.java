@@ -9,18 +9,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SignsConfig {
     private final File configFile;
     private FileConfiguration config;
-    private final Plugin plugin;
-
-    public SignsConfig(File configFile, Plugin plugin) {
-        this.configFile = configFile;
-        this.plugin = plugin;
+    public SignsConfig(File file) {
+        this.configFile = file;
+        this.config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public void SignResourcePack() {
+    public void signResourcePack(Plugin plugin) {
         for (String key : config.getKeys(false)) {
             String[] locationParts = key.split(",");
             String worldName = locationParts[0];
@@ -33,6 +32,15 @@ public class SignsConfig {
                 String rpId = config.getString(key);
                 location.getBlock().setMetadata("rpId", new FixedMetadataValue(plugin, rpId));
             }
+        }
+    }
+    public void saveResourcePack(String serializedLocation, String rpId){
+        config.set(serializedLocation, rpId);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            System.out.println("NO SAVE METADATA");
+            e.printStackTrace();
         }
     }
 
