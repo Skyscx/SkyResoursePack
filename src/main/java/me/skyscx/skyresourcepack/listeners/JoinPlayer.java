@@ -1,6 +1,6 @@
 package me.skyscx.skyresourcepack.listeners;
 
-import me.skyscx.skyresourcepack.ResourseConfig;
+import me.skyscx.skyresourcepack.configs.ResourseConfig;
 import me.skyscx.skyresourcepack.SkyResourcePack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,10 +25,7 @@ public class JoinPlayer implements Listener {
             if (url != null) {
                 System.out.println("TRUE JOIN");
                 player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-            } else {
-                System.out.println("URL of the resource pack is null. Please check the configuration file.");
             }
         }
-        System.out.println("FALSE JOIN");
     }
 }

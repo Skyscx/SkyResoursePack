@@ -2,7 +2,14 @@ package me.skyscx.skyresourcepack;
 
 import me.skyscx.skyresourcepack.commands.ResourcePackCommandCompleter;
 import me.skyscx.skyresourcepack.commands.ResourсePackCommand;
+import me.skyscx.skyresourcepack.commands.Test;
+import me.skyscx.skyresourcepack.configs.PlayerConfig;
+import me.skyscx.skyresourcepack.configs.ResourseConfig;
+import me.skyscx.skyresourcepack.functions.Functions;
+import me.skyscx.skyresourcepack.functions.ResourcePackStatusManager;
 import me.skyscx.skyresourcepack.listeners.JoinPlayer;
+import me.skyscx.skyresourcepack.listeners.ResourcePackStatus;
+import me.skyscx.skyresourcepack.listeners.SignResourcePack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -20,20 +27,40 @@ import java.util.Objects;
 
 public final class SkyResourcePack extends JavaPlugin {
     private ResourseConfig resourseConfig;
+    private PlayerConfig playerConfig;
+    private ResourcePackStatusManager resourcePackStatusManager;
+
     public SkyResourcePack() {
     }
     @Override
     public void onEnable() {
-        Functions functions = new Functions();
         Messages messages = new Messages();
+        ResourcePackStatusManager resourcePackStatusManager = new ResourcePackStatusManager();
+        Functions functions = new Functions(resourcePackStatusManager, messages, this);
+
+
         File configFile = new File(getDataFolder(), "resource.yml");
         this.resourseConfig = new ResourseConfig(configFile);
         resourseConfig.setupDefaultParamets();
+
+        File playerFile = new File(getDataFolder(), "player.yml");
+        this.playerConfig = new PlayerConfig(playerFile);
+
         ResourseConfig resourceConfig = new ResourseConfig(new File(getDataFolder(), "resource.yml"));
-        Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages));
+        PlayerConfig playerConfig1 = new PlayerConfig(new File(getDataFolder(), "player.yml"));
+
+        Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages, playerConfig1, resourcePackStatusManager));
         Objects.requireNonNull(getCommand("resourcepack")).setTabCompleter(new ResourcePackCommandCompleter(resourceConfig));
+
+        Objects.requireNonNull(getCommand("test")).setExecutor(new Test());
+
         JoinPlayer joinPlayer = new JoinPlayer(this, resourseConfig);
+        SignResourcePack signResourcePack = new SignResourcePack(this, resourceConfig);
+        ResourcePackStatus resourcePackStatus = new ResourcePackStatus(resourcePackStatusManager);
+
+        getServer().getPluginManager().registerEvents(signResourcePack, this);
         getServer().getPluginManager().registerEvents(joinPlayer, this);
+        getServer().getPluginManager().registerEvents(resourcePackStatus, this);
 
 
     }

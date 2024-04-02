@@ -1,13 +1,16 @@
 package me.skyscx.skyresourcepack.commands;
 
-import me.skyscx.skyresourcepack.Functions;
+import me.skyscx.skyresourcepack.functions.Functions;
 import me.skyscx.skyresourcepack.Messages;
-import me.skyscx.skyresourcepack.ResourseConfig;
+import me.skyscx.skyresourcepack.configs.PlayerConfig;
+import me.skyscx.skyresourcepack.configs.ResourseConfig;
 import me.skyscx.skyresourcepack.SkyResourcePack;
+import me.skyscx.skyresourcepack.functions.ResourcePackStatusManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,16 +19,20 @@ import java.util.Objects;
 import static me.skyscx.skyresourcepack.Messages.*;
 
 public class ResourсePackCommand implements CommandExecutor {
+    private final ResourcePackStatusManager resourcePackStatusManager;
     private final SkyResourcePack plugin;
     private final ResourseConfig resourceConfig;
     private final Functions functions;
     private final Messages messages;
+    private final PlayerConfig playerConfig;
 
-    public ResourсePackCommand(SkyResourcePack plugin, ResourseConfig resourceConfig, Functions functions, Messages messages) {
+    public ResourсePackCommand(SkyResourcePack plugin, ResourseConfig resourceConfig, Functions functions, Messages messages, PlayerConfig playerConfig, ResourcePackStatusManager resourcePackStatusManager) {
         this.plugin = plugin;
         this.resourceConfig = resourceConfig;
         this.functions = functions;
         this.messages = messages;
+        this.playerConfig = playerConfig;
+        this.resourcePackStatusManager = resourcePackStatusManager;
     }
 
     @Override
@@ -90,8 +97,11 @@ public class ResourсePackCommand implements CommandExecutor {
                 String name = resourceConfig.getNameRP(id);
                 String urlRP = resourceConfig.getUrlRP(name);
                 player.setResourcePack(urlRP, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                String message = messages.loadRP(name, id);
-                player.sendMessage(message);
+                resourcePackStatusManager.put(player.getUniqueId(), PlayerResourcePackStatusEvent.Status.DECLINED);
+                functions.checkResourcePackStatus(player, name, id);
+
+                //String message = messages.loadRP(name, id);
+                //player.sendMessage(message);
                 return true;
             }else {
                 sender.sendMessage(noConsoleCMD);

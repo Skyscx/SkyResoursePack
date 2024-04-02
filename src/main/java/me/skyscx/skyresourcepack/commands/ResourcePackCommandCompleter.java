@@ -1,6 +1,6 @@
 package me.skyscx.skyresourcepack.commands;
 
-import me.skyscx.skyresourcepack.ResourseConfig;
+import me.skyscx.skyresourcepack.configs.ResourseConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

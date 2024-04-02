@@ -1,4 +1,4 @@
-package me.skyscx.skyresourcepack;
+package me.skyscx.skyresourcepack.configs;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,10 +21,6 @@ public class ResourseConfig {
         this.config = YamlConfiguration.loadConfiguration(file);
     }
     public void setupDefaultParamets() {
-//        if (!config.contains("server-rp")) {
-//            System.out.println("Null RP");
-//            config.set("server-rp", null);
-//        }
         if (!config.contains("auto-rp-server")) {
             config.set("auto-rp-server", true);
         }
@@ -152,26 +148,6 @@ public class ResourseConfig {
             return new ArrayList<>();
         }
         return new ArrayList<>(resourcePackSection.getKeys(false));
-
-        /**
-         *
-         * for (int i = 0; i < myRP.size(); i++) {
-         *                         String rp = myRP.get(i);
-         *                         message.append(rp).append(" (id: ").append(resourceConfig.getIdRP(rp)).append(")");
-         *                         if (i < myRP.size() - 1) {
-         *                             message.append(", ");
-         *                         }
-         *                     }
-         * **/
-    }
-    public void getListRPString(CommandSender sender) {
-        List<String> resourcePackNames = getListRP();
-        if (resourcePackNames.isEmpty()) {
-            sender.sendMessage(emptyList);
-        } else {
-            String resourcePacksList = listRP + " " + String.join(", ", resourcePackNames);
-            sender.sendMessage(resourcePacksList);
-        }
     }
     public List<String> getListRPowner(String player) {
         List<String> playerResourcePacks = new ArrayList<>();
@@ -208,7 +184,7 @@ public class ResourseConfig {
             }
         }
 
-        return -1; // Возвращаем -1, если все ID заняты (не должно происходить)
+        return -1;
     }
     public boolean checkServRP(){
         boolean bool = config.getBoolean("auto-rp-server");
@@ -240,6 +216,17 @@ public class ResourseConfig {
             }
         }
         return count;
+    }
+    public boolean checkingID(int id){
+        ConfigurationSection resourcepackSection = config.getConfigurationSection("resourcepack");
+        if (resourcepackSection == null) {return false;}
+        for (String key : resourcepackSection.getKeys(false)) {
+            ConfigurationSection packSection = resourcepackSection.getConfigurationSection(key);
+            if (packSection == null) {continue;}
+            int packId = packSection.getInt("id");
+            if (packId == id) {return true;}
+        }
+        return false;
     }
 
 }

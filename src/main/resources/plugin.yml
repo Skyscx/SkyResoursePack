@@ -10,3 +10,6 @@ commands:
       - rp
     description: Установка и загрузка пакета ресурсов.
     usage: /rp help
+  test:
+    description: Test
+    usage: /test for test

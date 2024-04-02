@@ -60,4 +60,9 @@ public class Messages {
     }
     public static String emptyListRP = "§c Список пакетов ресурсов пуст!";
     public static String listPlayerCMD = " Используй: §7/rp list player <nickname>";
+    public static String inSignNoRP = "§c Пакет ресурсов не найден или был удален!";
+    public static String failLoadRP = "§c Пакет ресурсов настроен неправильно!";
+    public static String failCooldownLoadRP = "§c Ошибка установки! Повторите попытку позже.\n" +
+            "§7 Возможно, вы запретили установку RP сервера.";
+
 }
