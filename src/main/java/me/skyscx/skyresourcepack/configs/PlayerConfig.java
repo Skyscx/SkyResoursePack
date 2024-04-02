@@ -30,16 +30,4 @@ public class PlayerConfig {
             getLogger().info("PLAYER NOT ONLINE");
         }
     }
-//    public boolean playerLoadRP(Player player, String name){
-//        int version = config.getInt("resourcepack." + name + ".version") + 1;
-//        config.set("resourcepack." + name + ".url", url);
-//        config.set("resourcepack." + name + ".version", version);
-//        try {
-//            config.save(file);
-//        }catch (Exception e){
-//            sender.sendMessage(failSaveCFG + e.getMessage());
-//            return true;
-//        }
-//        return false;
-//    }
 }

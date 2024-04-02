@@ -2,7 +2,6 @@ package me.skyscx.skyresourcepack;
 
 import me.skyscx.skyresourcepack.commands.ResourcePackCommandCompleter;
 import me.skyscx.skyresourcepack.commands.ResourсePackCommand;
-import me.skyscx.skyresourcepack.commands.Test;
 import me.skyscx.skyresourcepack.configs.PlayerConfig;
 import me.skyscx.skyresourcepack.configs.ResourseConfig;
 import me.skyscx.skyresourcepack.functions.Functions;
@@ -52,10 +51,8 @@ public final class SkyResourcePack extends JavaPlugin {
         Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages, playerConfig1, resourcePackStatusManager));
         Objects.requireNonNull(getCommand("resourcepack")).setTabCompleter(new ResourcePackCommandCompleter(resourceConfig));
 
-        Objects.requireNonNull(getCommand("test")).setExecutor(new Test());
-
         JoinPlayer joinPlayer = new JoinPlayer(this, resourseConfig);
-        SignResourcePack signResourcePack = new SignResourcePack(this, resourceConfig);
+        SignResourcePack signResourcePack = new SignResourcePack(this, resourceConfig, functions);
         ResourcePackStatus resourcePackStatus = new ResourcePackStatus(resourcePackStatusManager);
 
         getServer().getPluginManager().registerEvents(signResourcePack, this);

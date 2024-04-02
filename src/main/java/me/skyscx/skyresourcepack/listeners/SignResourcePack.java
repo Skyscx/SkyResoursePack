@@ -2,6 +2,7 @@ package me.skyscx.skyresourcepack.listeners;
 
 import me.skyscx.skyresourcepack.configs.ResourseConfig;
 import me.skyscx.skyresourcepack.SkyResourcePack;
+import me.skyscx.skyresourcepack.functions.Functions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,21 +19,24 @@ import static me.skyscx.skyresourcepack.Messages.*;
 public class SignResourcePack implements Listener {
     private final ResourseConfig resourceConfig;
     private final SkyResourcePack plugin;
-    public SignResourcePack(SkyResourcePack plugin, ResourseConfig resourceConfig) {
+    private final Functions functions;
+    public SignResourcePack(SkyResourcePack plugin, ResourseConfig resourceConfig, Functions functions) {
         this.plugin = plugin;
         this.resourceConfig = resourceConfig;
+        this.functions = functions;
     }
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         boolean isLineReplaced = false;
         for (int i = 0; i < event.getLines().length; i++) {
             String line = event.getLine(i);
+            assert line != null;
             if (line.matches("\\[rp:\\d+\\]")) {
                 if (isLineReplaced) {
                     // Если замена уже была произведена в предыдущей строке, то прерываем обработку
                     return;
                 }
-                String rpId = line.replaceAll("[^\\d]", "");
+                String rpId = line.replaceAll("\\D", "");
                 int id = Integer.parseInt(rpId);
                 if (!(resourceConfig.checkingID(id))) {
                     return;
@@ -61,6 +65,7 @@ public class SignResourcePack implements Listener {
                         String name = resourceConfig.getNameRP(id);
                         String url = resourceConfig.getUrlRP(name);
                         player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
+                        functions.checkResourcePackStatus(player, name, id);
                         break;
                     }
                 }

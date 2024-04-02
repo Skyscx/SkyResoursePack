@@ -54,10 +54,6 @@ public class Functions {
                 // Выполнение действий, когда загрузка ресурсного пакета не удалась
                 player.sendMessage(failLoadRP);
                 scheduler.cancelTasks(plugin);
-            } else if (status == PlayerResourcePackStatusEvent.Status.FAILED_DOWNLOAD) {
-                // Выполнение действий, когда загрузка ресурсного пакета не удалась
-                player.sendMessage(failLoadRP);
-                scheduler.cancelTasks(plugin);
             }
         }, 0L, 20L); // Задержка 0 тиков, период 20 тиков (1 секунда)
         // Отмена задачи через 1 минуту, если статус не будет SUCCESSFULLY_LOADED
@@ -66,6 +62,7 @@ public class Functions {
             if (status != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
                 // Выполнение действий, когда статус не будет SUCCESSFULLY_LOADED в течение 1 минуты
                 player.sendMessage(failCooldownLoadRP);
+                scheduler.cancelTasks(plugin);
             }
         }, 1200L); // Задержка 1200 тиков (1 минута)
     }

@@ -210,7 +210,7 @@ public class ResourseConfig {
         ConfigurationSection resourcepackSection = config.getConfigurationSection("resourcepack");
         if (resourcepackSection != null) {
             for (String key : resourcepackSection.getKeys(false)) {
-                if (config.getString("resourcepack." + key + ".player").equalsIgnoreCase(player.getName())) {
+                if (Objects.requireNonNull(config.getString("resourcepack." + key + ".player")).equalsIgnoreCase(player.getName())) {
                     count++;
                 }
             }
