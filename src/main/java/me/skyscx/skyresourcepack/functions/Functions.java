@@ -47,26 +47,22 @@ public class Functions {
                 String statusString = status.toString();
                 System.out.println(statusString);
                 if (statusString.equalsIgnoreCase("SUCCESSFULLY_LOADED")) {
-                    // Выполнение дальнейшего кода, когда ресурсный пакет успешно загружен
                     String message = messages.loadRP(name, id);
                     player.sendMessage(message);
                     scheduler.cancelTasks(plugin);
                 } else if (statusString.equalsIgnoreCase("FAILED_DOWNLOAD") || statusString.equalsIgnoreCase("FAILED_RELOAD")) {
-                    // Выполнение действий, когда загрузка ресурсного пакета не удалась
                     player.sendMessage(failLoadRP);
                     scheduler.cancelTasks(plugin);
                 }
-            }, 0L, 20L); // Задержка 0 тиков, период 20 тиков (1 секунда)
-            // Отмена задачи через 1 минуту, если статус не будет SUCCESSFULLY_LOADED
+            }, 0L, 20L);
             scheduler.runTaskLaterAsynchronously(plugin, () -> {
                 PlayerResourcePackStatusEvent.Status status = resourcePackStatusManager.getResourcePackStatus(player.getUniqueId());
                 if (status != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
-                    // Выполнение действий, когда статус не будет SUCCESSFULLY_LOADED в течение 1 минуты
                     player.sendMessage(failCooldownLoadRP);
                     scheduler.cancelTasks(plugin);
                 }
-            }, 1200L); // Задержка 1200 тиков (1 минута)
-        }, 20L); // Задержка 20 тиков (1 секунда) перед выполнением метода
+            }, 1200L);
+        }, 20L);
     }
 
 }

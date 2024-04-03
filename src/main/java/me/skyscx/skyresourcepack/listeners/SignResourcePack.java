@@ -36,19 +36,12 @@ public class SignResourcePack implements Listener {
             String line = event.getLine(i);
             assert line != null;
             if (line.matches("\\[rp:\\d+\\]")) {
-                if (isLineReplaced) {
-                    // Если замена уже была произведена в предыдущей строке, то прерываем обработку
-                    return;
-                }
+                if (isLineReplaced) {return;}
                 String rpId = line.replaceAll("\\D", "");
                 int id = Integer.parseInt(rpId);
-                if (!(resourceConfig.checkingID(id))) {
-                    return;
-                }
+                if (!(resourceConfig.checkingID(id))) {return;}
                 event.setLine(i, "§u§aResourсePack");
                 event.getBlock().setMetadata("rpId", new FixedMetadataValue(this.plugin, rpId));
-
-                // Сохранение метаданных блока в файле конфигурации
                 String serializedLocation = event.getBlock().getWorld().getName() + "," + event.getBlock().getX() + "," + event.getBlock().getY() + "," + event.getBlock().getZ();
                 signsConfig.saveResourcePack(serializedLocation, rpId);
                 isLineReplaced = true;
@@ -61,8 +54,7 @@ public class SignResourcePack implements Listener {
         Player player = event.getPlayer();
         if (event.getHand() == EquipmentSlot.HAND && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign sign) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                event.setCancelled(true); // Отмена редактирования сообщения при правом клике
-
+                event.setCancelled(true);
                 for (int i = 0; i < sign.getLines().length; i++) {
                     if (sign.getLine(i).equalsIgnoreCase("§u§aResourсePack")) {
                         String rpId = event.getClickedBlock().getMetadata("rpId").get(0).asString();

@@ -22,10 +22,7 @@ public class JoinPlayer implements Listener {
         if (resourceConfig.checkServRP()) {
             Player player = event.getPlayer();
             String url = resourceConfig.getServerRPurl();
-            if (url != null) {
-                System.out.println("TRUE JOIN");
-                player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-            }
+            if (url != null) {player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));}
         }
     }
 }
