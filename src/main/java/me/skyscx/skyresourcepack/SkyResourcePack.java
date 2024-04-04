@@ -67,6 +67,7 @@ public final class SkyResourcePack extends JavaPlugin {
         getServer().getPluginManager().registerEvents(resourcePackStatus, this);
 
 
+
     }
 
     @Override

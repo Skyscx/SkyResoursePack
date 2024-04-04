@@ -12,8 +12,10 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import static me.skyscx.skyresourcepack.Messages.*;
@@ -54,23 +56,24 @@ public class SignResourcePack implements Listener {
         Player player = event.getPlayer();
         if (event.getHand() == EquipmentSlot.HAND && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign sign) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                event.setCancelled(true);
                 for (int i = 0; i < sign.getLines().length; i++) {
                     if (sign.getLine(i).equalsIgnoreCase("§u§aResourсePack")) {
-                        String rpId = event.getClickedBlock().getMetadata("rpId").get(0).asString();
-                        int id = Integer.parseInt(rpId);
-                        if (!(resourceConfig.checkingID(id))) {
-                            player.sendMessage(inSignNoRP);
-                            return;
+                        List<MetadataValue> metadataValues = event.getClickedBlock().getMetadata("rpId");
+                        if (!metadataValues.isEmpty()) {
+                            event.setCancelled(true);
+                            String rpId = metadataValues.get(0).asString();
+                            int id = Integer.parseInt(rpId);
+                            if (!(resourceConfig.checkingID(id))) {player.sendMessage(inSignNoRP);return;}
+                            String name = resourceConfig.getNameRP(id);
+                            String url = resourceConfig.getUrlRP(name);
+                            player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
+                            functions.checkResourcePackStatus(player, name, id);
+                            break;
                         }
-                        String name = resourceConfig.getNameRP(id);
-                        String url = resourceConfig.getUrlRP(name);
-                        player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                        functions.checkResourcePackStatus(player, name, id);
-                        break;
                     }
                 }
             }
         }
     }
+
 }
