@@ -1,6 +1,7 @@
 package me.skyscx.skyresourcepack.functions;
 
 import me.skyscx.skyresourcepack.Messages;
+import me.skyscx.skyresourcepack.configs.PlayerConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
@@ -9,6 +10,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 
 import static me.skyscx.skyresourcepack.Messages.*;
 
@@ -16,11 +18,13 @@ public class Functions {
     private final ResourcePackStatusManager resourcePackStatusManager;
     private final Messages messages;
     private final Plugin plugin;
+    private final PlayerConfig playerConfig;
 
-    public Functions(ResourcePackStatusManager resourcePackStatusManager, Messages messages, Plugin plugin) {
+    public Functions(ResourcePackStatusManager resourcePackStatusManager, Messages messages, Plugin plugin, PlayerConfig playerConfig) {
         this.resourcePackStatusManager = resourcePackStatusManager;
         this.messages = messages;
         this.plugin = plugin;
+        this.playerConfig = playerConfig;
     }
     public boolean isUrlValid(String urlString) {
         try {
@@ -39,7 +43,8 @@ public class Functions {
         }
         return true;
     }
-    public void checkResourcePackStatus(Player player, String name, int id) {
+    public CompletableFuture<Boolean> checkResourcePackStatus(Player player) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.runTaskLaterAsynchronously(plugin, () -> {
             scheduler.runTaskTimerAsynchronously(plugin, () -> {
@@ -47,22 +52,23 @@ public class Functions {
                 String statusString = status.toString();
                 System.out.println(statusString);
                 if (statusString.equalsIgnoreCase("SUCCESSFULLY_LOADED")) {
-                    String message = messages.loadRP(name, id);
-                    player.sendMessage(message);
                     scheduler.cancelTasks(plugin);
+                    future.complete(true);
                 } else if (statusString.equalsIgnoreCase("FAILED_DOWNLOAD") || statusString.equalsIgnoreCase("FAILED_RELOAD")) {
-                    player.sendMessage(failLoadRP);
+                    player.sendMessage(failLoadRPa);
                     scheduler.cancelTasks(plugin);
+                    future.complete(false);
                 }
             }, 0L, 20L);
             scheduler.runTaskLaterAsynchronously(plugin, () -> {
                 PlayerResourcePackStatusEvent.Status status = resourcePackStatusManager.getResourcePackStatus(player.getUniqueId());
                 if (status != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
-                    player.sendMessage(failCooldownLoadRP);
                     scheduler.cancelTasks(plugin);
+                    future.complete(false);
                 }
             }, 1200L);
         }, 20L);
+        return future;
     }
 
 }

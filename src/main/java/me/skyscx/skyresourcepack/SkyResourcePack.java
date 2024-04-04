@@ -37,7 +37,7 @@ public final class SkyResourcePack extends JavaPlugin {
     public void onEnable() {
         Messages messages = new Messages();
         ResourcePackStatusManager resourcePackStatusManager = new ResourcePackStatusManager();
-        Functions functions = new Functions(resourcePackStatusManager, messages, this);
+        Functions functions = new Functions(resourcePackStatusManager, messages, this, playerConfig);
 
         File configFile = new File(getDataFolder(), "resource.yml");
         this.resourseConfig = new ResourseConfig(configFile);
@@ -55,7 +55,7 @@ public final class SkyResourcePack extends JavaPlugin {
 
         signsConfig1.signResourcePack(this);
 
-        Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages, playerConfig1, resourcePackStatusManager));
+        Objects.requireNonNull(getCommand("resourcepack")).setExecutor(new ResourсePackCommand(this, resourceConfig, functions, messages, playerConfig1, resourcePackStatusManager, signsConfig1));
         Objects.requireNonNull(getCommand("resourcepack")).setTabCompleter(new ResourcePackCommandCompleter(resourceConfig));
 
         JoinPlayer joinPlayer = new JoinPlayer(this, resourseConfig);

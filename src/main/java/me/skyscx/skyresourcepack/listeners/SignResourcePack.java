@@ -59,17 +59,14 @@ public class SignResourcePack implements Listener {
                     if (sign.getLine(i).equalsIgnoreCase("§u§aResourсePack")) {
                         String rpId = event.getClickedBlock().getMetadata("rpId").get(0).asString();
                         int id = Integer.parseInt(rpId);
-                        if (!(resourceConfig.checkingID(id))) {
-                            player.sendMessage(inSignNoRP);
-                            return;
-                        }
+                        if (!(resourceConfig.checkingID(id))) {player.sendMessage(inSignNoRP);return;}
                         String name = resourceConfig.getNameRP(id);
                         String url = resourceConfig.getUrlRP(name);
                         player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                        functions.checkResourcePackStatus(player, name, id);
+                        functions.checkResourcePackStatus(player);
                         break;
                     }
-                }
+                } // TODO: Добавить проверки как в load у команд.
             }
         }
     }

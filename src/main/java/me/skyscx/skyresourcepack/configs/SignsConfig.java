@@ -18,7 +18,9 @@ public class SignsConfig {
         this.configFile = file;
         this.config = YamlConfiguration.loadConfiguration(file);
     }
-
+    public void reloadSignsConfig() {
+        config = YamlConfiguration.loadConfiguration(configFile);
+    }
     public void signResourcePack(Plugin plugin) {
         for (String key : config.getKeys(false)) {
             String[] locationParts = key.split(",");
@@ -43,5 +45,6 @@ public class SignsConfig {
             e.printStackTrace();
         }
     }
+
 
 }

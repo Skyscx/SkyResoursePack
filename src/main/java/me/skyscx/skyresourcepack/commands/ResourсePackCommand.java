@@ -1,5 +1,6 @@
 package me.skyscx.skyresourcepack.commands;
 
+import me.skyscx.skyresourcepack.configs.SignsConfig;
 import me.skyscx.skyresourcepack.functions.Functions;
 import me.skyscx.skyresourcepack.Messages;
 import me.skyscx.skyresourcepack.configs.PlayerConfig;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import static me.skyscx.skyresourcepack.Messages.*;
 
@@ -25,14 +27,23 @@ public class ResourсePackCommand implements CommandExecutor {
     private final Functions functions;
     private final Messages messages;
     private final PlayerConfig playerConfig;
-
-    public ResourсePackCommand(SkyResourcePack plugin, ResourseConfig resourceConfig, Functions functions, Messages messages, PlayerConfig playerConfig, ResourcePackStatusManager resourcePackStatusManager) {
+    private final SignsConfig signsConfig;
+    public ResourсePackCommand(
+            SkyResourcePack plugin,
+            ResourseConfig resourceConfig,
+            Functions functions,
+            Messages messages,
+            PlayerConfig playerConfig,
+            ResourcePackStatusManager resourcePackStatusManager,
+            SignsConfig signsConfig)
+    {
         this.plugin = plugin;
         this.resourceConfig = resourceConfig;
         this.functions = functions;
         this.messages = messages;
         this.playerConfig = playerConfig;
         this.resourcePackStatusManager = resourcePackStatusManager;
+        this.signsConfig = signsConfig;
     }
 
     @Override
@@ -77,7 +88,7 @@ public class ResourсePackCommand implements CommandExecutor {
             String message = messages.succefulUpload(name, resourceConfig.getIdRP(name));
             sender.sendMessage(message);
             return true;
-        }
+        } // TODO: Добавить описание для пакетов ресурсов.
         if (args[0].equalsIgnoreCase("load")) {
             if (sender instanceof Player player){
                 if (args.length < 2){
@@ -98,15 +109,24 @@ public class ResourсePackCommand implements CommandExecutor {
                 String urlRP = resourceConfig.getUrlRP(name);
                 player.setResourcePack(urlRP, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
                 resourcePackStatusManager.put(player.getUniqueId(), PlayerResourcePackStatusEvent.Status.DECLINED);
-                functions.checkResourcePackStatus(player, name, id);
-
-                //String message = messages.loadRP(name, id);
-                //player.sendMessage(message);
+                try {
+                    boolean success = functions.checkResourcePackStatus(player).get();
+                    if (success) {
+                        String message = messages.loadRP(name, id);
+                        player.sendMessage(message);
+                        playerConfig.savePlayerRP(player, name);
+                    } else {
+                        player.sendMessage(failLoadRP);
+                    }
+                    return true;
+                } catch (InterruptedException | ExecutionException e) {
+                    System.getLogger(fail);
+                }
                 return true;
             }else {
                 sender.sendMessage(noConsoleCMD);
             }
-        }
+        } // Вроде усе, добавил сохранение в players.yml
         if (args[0].equalsIgnoreCase("delete")) {
             if (args.length < 2) {
                 sender.sendMessage(cmdDelete);
@@ -120,13 +140,14 @@ public class ResourсePackCommand implements CommandExecutor {
             if (sender.hasPermission("skyresourcepack.admin") || sender.isOp() || sender.getName().equalsIgnoreCase(owner)){
                 boolean delRP = resourceConfig.deleteRP(name, sender);
                 if (delRP) {return true;}
+                playerConfig.delRP(name);
                 String message = messages.deleteRP(name);
                 sender.sendMessage(message);
             }else {
                 sender.sendMessage(noAuthor);
             }
             return true;
-        }
+        } // Добавил фишку, если рп удален, то он удаляется с конфигурации у игроков юзающих этот рп. и будет серверный
         if (args[0].equalsIgnoreCase("update")) {
             if (args.length < 3){
                 sender.sendMessage(cmdUpdate);
@@ -151,13 +172,15 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(noAuthor);
             }
             return true;
-        }
+        } // Тут нафиг ничо не надо трогать как по мне
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("skyresourcepack.admin") || !sender.isOp()) {return true;}
             resourceConfig.reloadResourceConfig();
+            playerConfig.reloadPlayersConfig();
+            signsConfig.reloadSignsConfig();
             sender.sendMessage(reloadedCFG);
             return true;
-        }
+        } // Добавил перезагрузку новых двух конфигураций.
         if (args[0].equalsIgnoreCase("server")){
             if (args.length > 1 ){
                 if (args[1].equalsIgnoreCase("set")){
@@ -180,7 +203,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     sender.sendMessage(succServerRPset);
                     return true;
                 }
-            }
+            } // server set
             if (sender instanceof Player player) {
                 String url = resourceConfig.getServerRPurl();
                 if (url == null){
@@ -188,21 +211,48 @@ public class ResourсePackCommand implements CommandExecutor {
                     return true;
                 }
                 player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                player.sendMessage(loadServRP);
+                try {
+                    boolean success = functions.checkResourcePackStatus(player).get();
+                    if (success) {
+                        player.sendMessage(loadServRP);
+                        String name = "SERVER";
+                        playerConfig.savePlayerRP(player, name);
+                    } else {
+                        player.sendMessage(deniedServerRPset);
+                    }
+                    return true;
+                } catch (InterruptedException | ExecutionException e) {
+                    System.getLogger(fail);
+                }
                 return true;
             } else {
                 sender.sendMessage(noConsoleCMD);
                 return true;
             }
 
-        }
+        } // Вроде бы должно работать, сохраняется запись в players.yml (server rp)
         if (args[0].equalsIgnoreCase("disable")) {
             if (sender instanceof Player player){
-                player.setResourcePack("","");
-                player.sendMessage(disabledRP);
+                try {
+                    boolean success = functions.checkResourcePackStatus(player).get();
+                    if (success) {
+                        player.setResourcePack("","");
+                        player.sendMessage(disabledRP);
+                        playerConfig.delPlayerRP(player);
+                    } else {
+                        player.sendMessage(noInstallRP);
+                    }
+                    return true;
+                } catch (InterruptedException | ExecutionException e) {
+                    System.getLogger(fail);
+                }
+                return true;
+            } else {
+                sender.sendMessage(noConsoleCMD);
             }
             return true;
-        }
+        } // Вроде бы должно работать, удаляется запись с players.yml
+                                                                    // То есть при автозагрузке ничо не загрузит или рп сервера
         if (args[0].equalsIgnoreCase("list")) {
             StringBuilder message;
             if (args.length >= 2){
@@ -280,7 +330,7 @@ public class ResourсePackCommand implements CommandExecutor {
             }
             sender.sendMessage(message.toString());
             return true;
-        }
+        } // Оптимизировал сообщения
         if (args[0].equalsIgnoreCase("help")) {
             sender.sendMessage(helpCMD);
             return  true;
@@ -310,11 +360,13 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(messages.info(name, id, version, owner));
                 return true;
             }
+            // TODO: Добавить функцию использования команды без name & id. Чтобы выводилась информация о загруженном пакете ресурсов.
             else {
                 sender.sendMessage(cmdInfo);
                 return true;
             }
         }
+        // TODO: Добавить функцию использования команды без name & id. Чтобы выводилась информация о загруженном пакете ресурсов. (в INFO)
         sender.sendMessage(unkownCMD);
         return true;
     }

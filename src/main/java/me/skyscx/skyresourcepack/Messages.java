@@ -32,9 +32,9 @@ public class Messages {
     public static String unkownCMD = "§7 Недействительная команда! Используй /rp help для помощи.";
     public static String serverRPset = " Используй: §7/rp server set <url>";
     public static String succServerRPset = ChatColor.of("#008080") + " Пакеты ресурса для сервера успешно установлены!";
+    public static String deniedServerRPset = "§c Ошибка установки серверного пакета ресурсов";
     public static String invalidURL = "§c URL указан неправильно!";
     public static String disabledRP = ChatColor.of("#008080") + " Пакеты ресурсов отключены!";
-    public static String emptyList = "§7 Список пакетов ресурсов пуст!";
     public static String listRP = ChatColor.of("#008080") + " Список пакетов ресурсов: §r";
     public static String invalidID = "§c Неверный ID";
     public static String helpCMD = ChatColor.of("#008080") +" Список команд:\n" +
@@ -62,7 +62,9 @@ public class Messages {
     public static String listPlayerCMD = " Используй: §7/rp list player <nickname>";
     public static String inSignNoRP = "§c Пакет ресурсов не найден или был удален!";
     public static String failLoadRP = "§c Пакет ресурсов настроен неправильно!";
-    public static String failCooldownLoadRP = "§c Ошибка установки! Повторите попытку позже.\n" +
-            "§7 Возможно, вы запретили установку RP сервера.";
+    public static String failLoadRPa = "§c Ошибка установки! Возможно, вы запретили установку RP сервера.";
+    public static String failConfigPlayer = "§c Произошла ошибка с конфигурацией 'players'. Обратитесь к администратору";
+    public static String fail = "§c Возникла непредвиденная ошибка. Обратитесь к администратору!";
+    public static String noInstallRP = "§c У вас не установлен серверный пакет ресурсов!";
 
 }
