@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.skyscx.skyresourcepack.Messages.*;
 
@@ -26,14 +27,19 @@ public class Functions {
         this.plugin = plugin;
         this.playerConfig = playerConfig;
     }
-    public boolean isUrlValid(String urlString) {
-        try {
-            URL url = new URL(urlString);
-            url.openConnection().connect();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    public CompletableFuture<Boolean> isUrlValidAsync(String urlString) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL url = new URL(urlString);
+                url.openConnection().connect();
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        });
+    }  // TODO: Пофиксить двойной вывод сообщения о инвалиде юрл
+    public CompletableFuture<Boolean> checkUrlAsync(String url) {
+        return isUrlValidAsync(url).thenApply(isValid -> !isValid);
     }
     public boolean isNumeric(String num) {
         try {
@@ -54,7 +60,11 @@ public class Functions {
                 if (statusString.equalsIgnoreCase("SUCCESSFULLY_LOADED")) {
                     scheduler.cancelTasks(plugin);
                     future.complete(true);
-                } else if (statusString.equalsIgnoreCase("FAILED_DOWNLOAD") || statusString.equalsIgnoreCase("FAILED_RELOAD")) {
+                } else if (statusString.equalsIgnoreCase(
+                        "FAILED_DOWNLOAD") ||
+                        statusString.equalsIgnoreCase("FAILED_RELOAD") ||
+                        statusString.equalsIgnoreCase("INVALID_URL"))
+                {
                     player.sendMessage(failLoadRPa);
                     scheduler.cancelTasks(plugin);
                     future.complete(false);

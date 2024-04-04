@@ -23,7 +23,7 @@ public class PlayerConfig {
         config = YamlConfiguration.loadConfiguration(file);
     }
     public void savePlayerRP(Player player, String name){
-        config.set("players." + player + ".name-rp", name);
+        config.set("players." + player.getName() + ".name-rp", name);
         try {
             config.save(file);
         }catch (Exception e){
@@ -31,7 +31,7 @@ public class PlayerConfig {
         }
     }
     public void delPlayerRP(Player player){
-        config.set("players." + player + ".name-rp", null);
+        config.set("players." + player.getName() + ".name-rp", null);
         try {
             config.save(file);
         }catch (Exception e){

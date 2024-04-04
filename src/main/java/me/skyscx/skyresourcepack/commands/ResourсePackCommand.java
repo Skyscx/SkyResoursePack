@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.skyscx.skyresourcepack.Messages.*;
 
@@ -62,8 +63,17 @@ public class ResourсePackCommand implements CommandExecutor {
                 sender.sendMessage(cmdUpload);
                 return true;
             }
-            boolean validURL = functions.isUrlValid(url);
-            if (!validURL){
+
+            AtomicBoolean validURL = new AtomicBoolean(true);
+            CompletableFuture<Boolean> future = functions.checkUrlAsync(url);
+            future.thenAccept(result -> {
+                if (result) {
+                    sender.sendMessage(invalidURL);
+                    validURL.set(false);
+                }
+            });
+            future.join();
+            if (!validURL.get()) {
                 sender.sendMessage(invalidURL);
                 return true;
             }
@@ -109,8 +119,7 @@ public class ResourсePackCommand implements CommandExecutor {
                 String urlRP = resourceConfig.getUrlRP(name);
                 player.setResourcePack(urlRP, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
                 resourcePackStatusManager.put(player.getUniqueId(), PlayerResourcePackStatusEvent.Status.DECLINED);
-                try {
-                    boolean success = functions.checkResourcePackStatus(player).get();
+                functions.checkResourcePackStatus(player).thenAccept(success -> {
                     if (success) {
                         String message = messages.loadRP(name, id);
                         player.sendMessage(message);
@@ -118,10 +127,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     } else {
                         player.sendMessage(failLoadRP);
                     }
-                    return true;
-                } catch (InterruptedException | ExecutionException e) {
-                    System.getLogger(fail);
-                }
+                });
                 return true;
             }else {
                 sender.sendMessage(noConsoleCMD);
@@ -154,8 +160,16 @@ public class ResourсePackCommand implements CommandExecutor {
                 return true;
             }
             String name = args[1], url = args[2];
-            boolean validURL = functions.isUrlValid(url);
-            if (!validURL){
+            AtomicBoolean validURL = new AtomicBoolean(true);
+            CompletableFuture<Boolean> future = functions.checkUrlAsync(url);
+            future.thenAccept(result -> {
+                if (result) {
+                    sender.sendMessage(invalidURL);
+                    validURL.set(false);
+                }
+            });
+            future.join();
+            if (!validURL.get()) {
                 sender.sendMessage(invalidURL);
                 return true;
             }
@@ -193,8 +207,16 @@ public class ResourсePackCommand implements CommandExecutor {
                         return true;
                     }
                     String url = args[2];
-                    boolean validURL = functions.isUrlValid(url);
-                    if (!validURL){
+                    AtomicBoolean validURL = new AtomicBoolean(true);
+                    CompletableFuture<Boolean> future = functions.checkUrlAsync(url);
+                    future.thenAccept(result -> {
+                        if (result) {
+                            sender.sendMessage(invalidURL);
+                            validURL.set(false);
+                        }
+                    });
+                    future.join();
+                    if (!validURL.get()) {
                         sender.sendMessage(invalidURL);
                         return true;
                     }
@@ -211,8 +233,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     return true;
                 }
                 player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                try {
-                    boolean success = functions.checkResourcePackStatus(player).get();
+                functions.checkResourcePackStatus(player).thenAccept(success -> {
                     if (success) {
                         player.sendMessage(loadServRP);
                         String name = "SERVER";
@@ -220,10 +241,7 @@ public class ResourсePackCommand implements CommandExecutor {
                     } else {
                         player.sendMessage(deniedServerRPset);
                     }
-                    return true;
-                } catch (InterruptedException | ExecutionException e) {
-                    System.getLogger(fail);
-                }
+                });
                 return true;
             } else {
                 sender.sendMessage(noConsoleCMD);
@@ -233,19 +251,15 @@ public class ResourсePackCommand implements CommandExecutor {
         } // Вроде бы должно работать, сохраняется запись в players.yml (server rp)
         if (args[0].equalsIgnoreCase("disable")) {
             if (sender instanceof Player player){
-                try {
-                    boolean success = functions.checkResourcePackStatus(player).get();
+                player.setResourcePack("","");
+                functions.checkResourcePackStatus(player).thenAccept(success -> {
                     if (success) {
-                        player.setResourcePack("","");
                         player.sendMessage(disabledRP);
                         playerConfig.delPlayerRP(player);
                     } else {
                         player.sendMessage(noInstallRP);
                     }
-                    return true;
-                } catch (InterruptedException | ExecutionException e) {
-                    System.getLogger(fail);
-                }
+                });
                 return true;
             } else {
                 sender.sendMessage(noConsoleCMD);
