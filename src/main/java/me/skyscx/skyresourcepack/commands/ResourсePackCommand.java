@@ -74,7 +74,6 @@ public class ResourсePackCommand implements CommandExecutor {
             });
             future.join();
             if (!validURL.get()) {
-                sender.sendMessage(invalidURL);
                 return true;
             }
             String playerName;
