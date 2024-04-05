@@ -41,10 +41,23 @@ public class SignsConfig {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            System.out.println("NO SAVE METADATA");
             e.printStackTrace();
         }
     }
+    public boolean isResourcePackSign(String serializedLocation) {
+        return config.contains(serializedLocation);
+    }
+    public void deleteResourcePackSign(String serializedLocation) {
+        if (config.contains(serializedLocation)) {
+            config.set(serializedLocation, null);
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 
 }

@@ -381,6 +381,21 @@ public class ResourсePackCommand implements CommandExecutor {
             }
         }
         // TODO: Добавить функцию использования команды без name & id. Чтобы выводилась информация о загруженном пакете ресурсов. (в INFO)
+        // TODO: Добавить для админов команду /rp server auto (true/false)
+        if (args[0].equalsIgnoreCase("toggle")){
+            if (sender instanceof Player player){
+                if (playerConfig.getAutoRpPlayer(player)){
+                    playerConfig.toggleAutoRpPlayer(player, false);
+                    sender.sendMessage(toggleAutoRpPlayerFalse);
+                    return true;
+                } else {
+                    playerConfig.toggleAutoRpPlayer(player, true);
+                    sender.sendMessage(toggleAutoRpPlayerTrue);
+                    return true;
+                }
+            }
+            return true;
+        }
         sender.sendMessage(unkownCMD);
         return true;
     }

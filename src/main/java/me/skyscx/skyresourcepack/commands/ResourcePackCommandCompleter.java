@@ -33,7 +33,8 @@ public class ResourcePackCommandCompleter implements TabCompleter {
                         "update",
                         "delete",
                         "reload",
-                        "info"
+                        "info",
+                        "toggle"
                 );
             } else {
                 return List.of(
@@ -45,7 +46,8 @@ public class ResourcePackCommandCompleter implements TabCompleter {
                         "upload",
                         "update",
                         "delete",
-                        "info"
+                        "info",
+                        "toggle"
                 );
             }
         } if (args.length == 2) {

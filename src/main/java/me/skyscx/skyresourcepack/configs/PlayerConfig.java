@@ -1,16 +1,16 @@
 package me.skyscx.skyresourcepack.configs;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 import static me.skyscx.skyresourcepack.Messages.failConfigPlayer;
-import static me.skyscx.skyresourcepack.Messages.failSaveCFG;
-import static org.bukkit.Bukkit.getLogger;
+import static me.skyscx.skyresourcepack.Messages.firstJoin;
 
 public class PlayerConfig {
     private FileConfiguration config;
@@ -18,6 +18,19 @@ public class PlayerConfig {
     public PlayerConfig(File file) {
         this.file = file;
         this.config = YamlConfiguration.loadConfiguration(file);
+    }
+    public void setupDefaultParamets() {
+        if (!config.contains("url-wiki")) {
+            config.set("url-wiki", "https://example.com");
+        }
+        if (!config.contains("show-join-message")){
+            config.set("show-join-message", true);
+        }
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void reloadPlayersConfig() {
         config = YamlConfiguration.loadConfiguration(file);
@@ -38,12 +51,27 @@ public class PlayerConfig {
             player.sendMessage(failConfigPlayer);
         }
     }
+    public void firstSetAutoRPSettingPlayer(Player player) {
+        String playerName = player.getName();
+        if (!config.contains("players." + playerName)) {
+            config.set("players." + playerName + ".auto-rp", false);
+            if (config.getBoolean("show-join-message")){
+                player.sendMessage(firstJoin + config.getString("url-wiki"));
+            }
+        }
+        try {
+            config.save(file);
+        }catch (Exception e){
+            player.sendMessage(failConfigPlayer);
+        }
+    }
+
     public void delRP(String name) {
         ConfigurationSection playersSection = config.getConfigurationSection("players");
         if (playersSection != null) {
             for (String playerName : playersSection.getKeys(false)) {
                 ConfigurationSection playerSection = playersSection.getConfigurationSection(playerName);
-                if (playerSection != null && playerSection.contains("name-rp") && playerSection.getString("name-rp").equals(name)) {
+                if (playerSection != null && playerSection.contains("name-rp") && Objects.equals(playerSection.getString("name-rp"), name)) {
                     playersSection.set(playerName, null);
                     try {
                         config.save(file);
@@ -55,24 +83,24 @@ public class PlayerConfig {
             }
         }
     }
-
-
-
-
-
-
-
-    public void checkInstallRP(Player player){
-        Player targetPlayer = Bukkit.getPlayerExact(player.getName());
-        if (targetPlayer != null) {
-            String getStatusRP = targetPlayer.getResourcePackStatus() != null ? targetPlayer.getResourcePackStatus().name() : null;
-            if (getStatusRP != null) {
-                getLogger().info(getStatusRP);
-            } else {
-                getLogger().info("NULL RP");
-            }
-        } else {
-            getLogger().info("PLAYER NOT ONLINE");
+    public boolean getAutoRpPlayer(Player player){
+        return config.getBoolean("players." + player.getName() + ".auto-rp");
+    }
+    public void toggleAutoRpPlayer(Player player, boolean param){
+        config.set("players." + player.getName() + ".auto-rp", param);
+        try {
+            config.save(file);
+        }catch (Exception e){
+            System.getLogger(failConfigPlayer);
         }
+    }
+    public String searchPlayerParams(Player player){
+        String playerName = player.getName();
+        if (config.contains("players." + playerName)){
+            if (getAutoRpPlayer(player)){
+                return config.getString("players." + playerName + ".name-rp");
+            }
+        }
+        return null;
     }
 }
