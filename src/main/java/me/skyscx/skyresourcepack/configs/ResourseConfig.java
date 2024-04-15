@@ -1,5 +1,6 @@
 package me.skyscx.skyresourcepack.configs;
 
+import me.skyscx.skyresourcepack.functions.Functions;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,6 +40,20 @@ public class ResourseConfig {
     }
 
     /**Getter and Setter**/
+    public String setAutoLoadRPServer(boolean bool){
+        boolean status = config.getBoolean("auto-rp-server");
+        if (status != bool){
+            config.set("auto-rp-server", bool);
+            try {
+                config.save(file);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return setAutoLoadRpTrue;
+        }
+        return setAutoLoadRpOne;
+    }
+
     public boolean getContainsResoursePack(String name, CommandSender sender){
         if (config.contains("resourcepack." + name)){
             sender.sendMessage(existingRP);

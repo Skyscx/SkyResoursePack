@@ -224,6 +224,17 @@ public class ResourсePackCommand implements CommandExecutor {
                     sender.sendMessage(succServerRPset);
                     return true;
                 }
+                if (args[1].equalsIgnoreCase("auto")){
+                    if (!sender.hasPermission("skyresoursepack.admin") || !sender.isOp()){
+                        sender.sendMessage(unkownCMD);
+                        return true;
+                    }else{
+                        boolean booleanArg = Boolean.parseBoolean(args[2]);
+                        String message = resourceConfig.setAutoLoadRPServer(booleanArg);
+                        sender.sendMessage(message);
+                        return true;
+                    }
+                }
             } // server set
             if (sender instanceof Player player) {
                 String url = resourceConfig.getServerRPurl();
@@ -380,7 +391,7 @@ public class ResourсePackCommand implements CommandExecutor {
             }
         }
         // TODO: Добавить функцию использования команды без name & id. Чтобы выводилась информация о загруженном пакете ресурсов. (в INFO)
-        // TODO: Добавить для админов команду /rp server auto (true/false)
+        // TODO: Добавить для админов команду /rp server auto (true/false) +++++++++
         if (args[0].equalsIgnoreCase("toggle")){
             if (sender instanceof Player player){
                 if (playerConfig.getAutoRpPlayer(player)){
@@ -395,6 +406,32 @@ public class ResourсePackCommand implements CommandExecutor {
             }
             return true;
         }
+        if (args[0].equalsIgnoreCase("wiki")){
+            if (args.length > 1) {
+                if (args[1].equalsIgnoreCase("set")){
+                    if (!sender.hasPermission("skyresoursepack.admin") || !sender.isOp()){
+                        sender.sendMessage(unkownCMD);
+                        return true;
+                    }
+                    if (args.length > 2){
+                        String url = args[2];
+                        boolean booleanArgs = playerConfig.setURLwiki(url);
+                        if (booleanArgs){sender.sendMessage(setUrlWikiTrue);} else {sender.sendMessage(setUrlWikiFalse);}
+                        return true;
+                    } else {
+                        sender.sendMessage(wikiSetCMD);
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                playerConfig.getMessageWikiURP(sender);
+                return true;
+            }
+
+        }
+
+
         sender.sendMessage(unkownCMD);
         return true;
     }

@@ -1,5 +1,6 @@
 package me.skyscx.skyresourcepack.configs;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,8 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import static me.skyscx.skyresourcepack.Messages.failConfigPlayer;
-import static me.skyscx.skyresourcepack.Messages.firstJoin;
+import static me.skyscx.skyresourcepack.Messages.*;
 
 public class PlayerConfig {
     private FileConfiguration config;
@@ -64,6 +64,22 @@ public class PlayerConfig {
         }catch (Exception e){
             player.sendMessage(failConfigPlayer);
         }
+    }
+    public void getMessageWikiURP(CommandSender sender){
+        String message = firstJoin + config.getString("url-wiki");
+        sender.sendMessage(message);
+    }
+    public boolean setURLwiki(String url){
+        if (url != null){
+            config.set("url-wiki", url);
+            try {
+                config.save(file);
+            }catch (Exception e){
+                System.getLogger(failConfigPlayer);
+            }
+            return true;
+        }
+        return false;
     }
 
     public void delRP(String name) {

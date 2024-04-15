@@ -17,7 +17,7 @@ public class Messages {
     public String autoLoadRP(String name, int id){
         return "§3 Пакет ресурсов §7" + name + "§3 автоматически установлен! §r(id: §7" + id + "§r)";
     }
-    public static String loadServRP = "§3 Пакет ресурсов §7SERVER" + "§3 успешно загружен!";
+    public static String loadServRP = "77 Пакет ресурсов §7SERVER" + "§3 успешно загружен!";
     public static String cmdDelete = " Используй: §7/rp delete <name>";
     public static String noAuthor = "§c Вы не имеете права выполнить данное действие с этим пакетом ресурсов!";
     public static String failSaveCFG = "§c Ошибка сохранения конфигурационного файла: ";
@@ -47,7 +47,8 @@ public class Messages {
             "§7/rp list <player/my> <player> §r- Открыть список всех существующих пакетов ресурсов.§r\n" +
             "§7/rp delete <name> §r- Удалить загруженный пакет ресурсов.§r\n" +
             "§7/rp info <name/id> <name/id> §r- Получить информацию о пакете ресурсов.\n" +
-            "§7/rp toggle §r- Включить/Выключить автозагрузку последнего пакета ресурсов.\n";
+            "§7/rp toggle §r- Включить/Выключить автозагрузку последнего пакета ресурсов.\n" +
+            "§7/rp wiki §r- Вывести ссылку на страницу в википедии.";
 
     public static String cmdInfo = " Используй: §7/rp info (name/id) <name/id>";
     public String info(String name, int id, int version, String owner){
@@ -74,5 +75,9 @@ public class Messages {
             " Подробнее - ";
     public static String toggleAutoRpPlayerTrue = "§3 Автозагрузка последнего пакета ресурсов§u включена" + "§r" + "§3!";
     public static String toggleAutoRpPlayerFalse = "§3 Автозагрузка последнего пакета ресурсов§u выключена" + "§r" + "§3!";
-
+    public static String setAutoLoadRpTrue = "§3 Автозагрузка серверного пакета ресурсов§u изменена" + "§r" + "§3!";
+    public static String setAutoLoadRpOne = "§3 Данный параметр уже был задан ранее!";
+    public static String wikiSetCMD = " Используй: §7/rp wiki set <url>";
+    public static String setUrlWikiTrue = "§3 Ссылка на wiki-страницу успешно обновлена!";
+    public static String setUrlWikiFalse = "§c Ошибка обновления ссылки на wiki-страницу!";
 }

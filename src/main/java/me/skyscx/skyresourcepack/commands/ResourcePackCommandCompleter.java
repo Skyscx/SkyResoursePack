@@ -34,7 +34,8 @@ public class ResourcePackCommandCompleter implements TabCompleter {
                         "delete",
                         "reload",
                         "info",
-                        "toggle"
+                        "toggle",
+                        "wiki"
                 );
             } else {
                 return List.of(
@@ -47,7 +48,8 @@ public class ResourcePackCommandCompleter implements TabCompleter {
                         "update",
                         "delete",
                         "info",
-                        "toggle"
+                        "toggle",
+                        "wiki"
                 );
             }
         } if (args.length == 2) {
@@ -55,6 +57,11 @@ public class ResourcePackCommandCompleter implements TabCompleter {
                 return List.of("<id>");
             }
             if (args[0].equalsIgnoreCase("server")) {
+                if (sender.hasPermission("skyresourcepack.admin") || sender.isOp()) {
+                    return List.of("set","auto");
+                } else return null;
+            }
+            if (args[0].equalsIgnoreCase("wiki")){
                 if (sender.hasPermission("skyresourcepack.admin") || sender.isOp()) {
                     return List.of("set");
                 } else return null;
@@ -89,8 +96,26 @@ public class ResourcePackCommandCompleter implements TabCompleter {
             if (args[0].equalsIgnoreCase("update")) {
                 return List.of("<url>");
             }
-            if (args[0].equalsIgnoreCase("set")) {
-                return List.of("<url>");
+            if (args[0].equalsIgnoreCase("server")) {
+                if (sender.hasPermission("skyresourcepack.admin") || sender.isOp()){
+                    if (args[1].equalsIgnoreCase("auto")){
+                        return List.of("true","false");
+                    }
+                    if (args[1].equalsIgnoreCase("set")){
+                        return List.of("<url>");
+                    }
+                    return Collections.emptyList();
+                }
+                return Collections.emptyList();
+            }
+            if (args[0].equalsIgnoreCase("wiki")){
+                if (sender.hasPermission("skyresourcepack.admin") || sender.isOp()) {
+                    if (args[1].equalsIgnoreCase("set")) {
+                        return List.of("<url>");
+                    }
+                    return Collections.emptyList();
+                }
+                return Collections.emptyList();
             }
             if (args[0].equalsIgnoreCase("info")) {
                 if (args[1].equalsIgnoreCase("name")){
