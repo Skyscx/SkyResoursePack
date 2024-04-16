@@ -17,7 +17,7 @@ public class Messages {
     public String autoLoadRP(String name, int id){
         return "§3 Пакет ресурсов §7" + name + "§3 автоматически установлен! §r(id: §7" + id + "§r)";
     }
-    public static String loadServRP = "77 Пакет ресурсов §7SERVER" + "§3 успешно загружен!";
+    public static String loadServRP = "§3 Пакет ресурсов §7SERVER" + "§3 успешно загружен!";
     public static String cmdDelete = " Используй: §7/rp delete <name>";
     public static String noAuthor = "§c Вы не имеете права выполнить данное действие с этим пакетом ресурсов!";
     public static String failSaveCFG = "§c Ошибка сохранения конфигурационного файла: ";
