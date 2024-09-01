@@ -16,7 +16,6 @@ public class ResourcePackStatus implements Listener {
     public void onPlayerResourcePackStatus(PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
         PlayerResourcePackStatusEvent.Status status = event.getStatus();
-        System.out.println(status);
         resourcePackStatusManager.setResourcePackStatus(player.getUniqueId(), status);
     }
 }

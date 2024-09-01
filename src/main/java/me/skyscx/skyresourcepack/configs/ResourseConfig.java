@@ -203,7 +203,6 @@ public class ResourseConfig {
     }
     public boolean checkServRP(){
         boolean bool = config.getBoolean("auto-rp-server");
-        System.out.println(bool);
         return bool;
     }
     public int getVersion(String name){

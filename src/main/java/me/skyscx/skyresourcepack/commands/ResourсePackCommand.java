@@ -81,8 +81,6 @@ public class ResourсePackCommand implements CommandExecutor {
                 playerName = player.getName();
                 int availableUpload = resourceConfig.getAvailableUpload();
                 int uploadedRP = resourceConfig.getUploadedRP(player);
-                System.out.println(uploadedRP + " - загружено");
-                System.out.println(availableUpload + " - доступно всего");
                 if (uploadedRP > availableUpload){
                     sender.sendMessage(moreUploadsError);
                     return true;
@@ -112,7 +110,6 @@ public class ResourсePackCommand implements CommandExecutor {
                 int id = Integer.parseInt(args[1]);
                 boolean containtRP = resourceConfig.checkContainsResoursePack(id, sender);
                 if (containtRP){
-                    System.out.println("containtRp = true");
                     return true;}
                 String name = resourceConfig.getNameRP(id);
                 String urlRP = resourceConfig.getUrlRP(name);

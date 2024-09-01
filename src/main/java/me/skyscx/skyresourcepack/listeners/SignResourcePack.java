@@ -78,52 +78,55 @@ public class SignResourcePack implements Listener {
         Player player = event.getPlayer();
         if (event.getHand() == EquipmentSlot.HAND && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign sign) {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                event.setCancelled(true);
-                for (int i = 0; i < sign.getLines().length; i++) {
-                    if (sign.getLine(i).startsWith("§u§aRP-")) {
-                        String rpId = sign.getLine(i).replaceAll("§u§aRP-", "").replaceAll("§u§a", "");
-                        if (rpId.equalsIgnoreCase("server")) {
-                            String url = resourceConfig.getServerRPurl();
-                            if (url == null){
-                                event.getPlayer().sendMessage(noWorkSigns);
+                Block block = event.getClickedBlock();
+                String serializedLocation = block.getWorld().getName() + "," + block.getX() + "," + block.getY() + "," + block.getZ();
+                if (signsConfig.isResourcePackSign(serializedLocation)) {
+                    for (int i = 0; i < sign.getLines().length; i++) {
+                        if (sign.getLine(i).startsWith("§u§aRP-")) {
+                            String rpId = sign.getLine(i).replaceAll("§u§aRP-", "").replaceAll("§u§a", "");
+                            if (rpId.equalsIgnoreCase("server")) {
+                                String url = resourceConfig.getServerRPurl();
+                                if (url == null){
+                                    event.getPlayer().sendMessage(noWorkSigns);
+                                    break;
+                                }
+                                player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
+                                functions.checkResourcePackStatus(player).thenAccept(success -> {
+                                    if (success) {
+                                        player.sendMessage(loadServRP);
+                                        String name = "SERVER";
+                                        playerConfig.savePlayerRP(player, name);
+                                    } else {
+                                        player.sendMessage(deniedServerRPset);
+                                    }
+                                });
+                                break;
+                            } else {
+                                int id = Integer.parseInt(rpId);
+                                if (!(resourceConfig.checkingID(id))) {
+                                    player.sendMessage(inSignNoRP);
+                                    return;
+                                }
+                                String name = resourceConfig.getNameRP(id);
+                                String url = resourceConfig.getUrlRP(name);
+                                player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
+                                resourcePackStatusManager.put(player.getUniqueId(), PlayerResourcePackStatusEvent.Status.DECLINED);
+                                functions.checkResourcePackStatus(player).thenAccept(success -> {
+                                    if (success) {
+                                        String message = messages.loadRP(name, id);
+                                        player.sendMessage(message);
+                                        playerConfig.savePlayerRP(player, name);
+                                    } else {
+                                        player.sendMessage(failLoadRP);
+                                    }
+                                });
                                 break;
                             }
-                            player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                            functions.checkResourcePackStatus(player).thenAccept(success -> {
-                                if (success) {
-                                    player.sendMessage(loadServRP);
-                                    String name = "SERVER";
-                                    playerConfig.savePlayerRP(player, name);
-                                } else {
-                                    player.sendMessage(deniedServerRPset);
-                                }
-                            });
-                            break;
-                        } else {
-                            int id = Integer.parseInt(rpId);
-                            if (!(resourceConfig.checkingID(id))) {
-                                player.sendMessage(inSignNoRP);
-                                return;
-                            }
-                            String name = resourceConfig.getNameRP(id);
-                            String url = resourceConfig.getUrlRP(name);
-                            player.setResourcePack(url, Objects.requireNonNull(plugin.getServer().getResourcePackHash()));
-                            resourcePackStatusManager.put(player.getUniqueId(), PlayerResourcePackStatusEvent.Status.DECLINED);
-                            functions.checkResourcePackStatus(player).thenAccept(success -> {
-                                if (success) {
-                                    String message = messages.loadRP(name, id);
-                                    player.sendMessage(message);
-                                    playerConfig.savePlayerRP(player, name);
-                                } else {
-                                    player.sendMessage(failLoadRP);
-                                }
-                            });
-                            break;
                         }
                     }
+                    event.setCancelled(true);
                 }
             }
         }
     }
-
 }

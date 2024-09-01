@@ -56,7 +56,6 @@ public class Functions {
             scheduler.runTaskTimerAsynchronously(plugin, () -> {
                 PlayerResourcePackStatusEvent.Status status = resourcePackStatusManager.getResourcePackStatus(player.getUniqueId());
                 String statusString = status.toString();
-                System.out.println(statusString);
                 if (statusString.equalsIgnoreCase("SUCCESSFULLY_LOADED")) {
                     scheduler.cancelTasks(plugin);
                     future.complete(true);
